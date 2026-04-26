@@ -37,12 +37,16 @@ class WeatherForecast(Base):
 
     wind_speed_mph = Column(Float, nullable=True)
     wind_gust_mph = Column(Float, nullable=True)
+    wind_direction_degrees = Column(Integer, nullable=True)
 
     uv_index = Column(Float, nullable=True)
+    cloud_cover = Column(Integer, nullable=True)
+    is_day = Column(Integer, nullable=True)
     weather_code = Column(Integer, nullable=True)
 
     sunrise = Column(DateTime, nullable=True)
     sunset = Column(DateTime, nullable=True)
+    
 
     fetched_at = Column(DateTime, default=datetime.utcnow, nullable=False)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow, nullable=False)

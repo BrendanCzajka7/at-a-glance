@@ -14,6 +14,9 @@ class WeatherCurrent(BaseModel):
     wind_speed_mph: float | None = None
     wind_gust_mph: float | None = None
     weather_code: int | None = None
+    wind_direction_degrees: int | None = None
+    cloud_cover: int | None = None
+    is_day: int | None = None
 
 
 class WeatherHourly(BaseModel):
@@ -27,6 +30,10 @@ class WeatherHourly(BaseModel):
     wind_speed_mph: float | None = None
     uv_index: float | None = None
     weather_code: int | None = None
+    wind_gust_mph: float | None = None
+    wind_direction_degrees: int | None = None
+    cloud_cover: int | None = None
+    is_day: int | None = None
 
 
 class WeatherDaily(BaseModel):

@@ -6,6 +6,7 @@ from app.services.location_service import LocationService
 from app.services.weather_forecast_service import WeatherForecastService
 
 from app.core.time import now_for_timezone
+from datetime import datetime, timedelta
 
 class WeatherForecastIngestPipeline:
     def __init__(self, db: Session):

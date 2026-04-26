@@ -34,10 +34,14 @@ class WeatherForecastRepository:
                 existing.precipitation_inches = forecast.precipitation_inches
                 existing.wind_speed_mph = forecast.wind_speed_mph
                 existing.wind_gust_mph = forecast.wind_gust_mph
+                existing.wind_direction_degrees = forecast.wind_direction_degrees
+                existing.cloud_cover = forecast.cloud_cover
+                existing.is_day = forecast.is_day
                 existing.uv_index = forecast.uv_index
                 existing.weather_code = forecast.weather_code
                 existing.sunrise = forecast.sunrise
                 existing.sunset = forecast.sunset
+                
                 existing.fetched_at = datetime.utcnow()
 
                 saved.append(existing)

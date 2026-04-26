@@ -21,6 +21,9 @@ class OpenMeteoClient:
                     "weather_code",
                     "wind_speed_10m",
                     "wind_gusts_10m",
+                    "cloud_cover",
+                    "wind_direction_10m",
+                    "is_day",
                 ]
             ),
             "hourly": ",".join(
@@ -33,6 +36,9 @@ class OpenMeteoClient:
                     "wind_speed_10m",
                     "wind_gusts_10m",
                     "uv_index",
+                    "cloud_cover",
+                    "wind_direction_10m",
+                    "is_day",
                 ]
             ),
             "daily": ",".join(

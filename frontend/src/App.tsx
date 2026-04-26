@@ -10,15 +10,28 @@ type WeatherCurrent = {
   forecast_for: string;
   temperature_f: number | null;
   apparent_temperature_f: number | null;
+  precipitation_inches: number | null;
   wind_speed_mph: number | null;
   wind_gust_mph: number | null;
+  wind_direction_degrees: number | null;
+  cloud_cover: number | null;
+  is_day: number | null;
+  weather_code: number | null;
 };
 
 type WeatherHourly = {
   forecast_for: string;
   temperature_f: number | null;
+  apparent_temperature_f: number | null;
   precipitation_probability: number | null;
+  precipitation_inches: number | null;
   wind_speed_mph: number | null;
+  wind_gust_mph: number | null;
+  wind_direction_degrees: number | null;
+  uv_index: number | null;
+  cloud_cover: number | null;
+  is_day: number | null;
+  weather_code: number | null;
 };
 
 type WeatherDaily = {
@@ -26,7 +39,11 @@ type WeatherDaily = {
   temperature_max_f: number | null;
   temperature_min_f: number | null;
   precipitation_probability: number | null;
+  precipitation_inches: number | null;
   uv_index: number | null;
+  sunrise: string | null;
+  sunset: string | null;
+  weather_code: number | null;
 };
 
 type Dashboard = {
@@ -37,6 +54,24 @@ type Dashboard = {
     daily: WeatherDaily[];
   };
 };
+
+function formatTime(value: string | null) {
+  if (!value) return "N/A";
+  return new Date(value).toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+  });
+}
+
+function formatDate(value: string) {
+  return new Date(value).toLocaleDateString();
+}
+
+function dayNight(value: number | null) {
+  if (value === 1) return "Day";
+  if (value === 0) return "Night";
+  return "N/A";
+}
 
 export default function App() {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -102,65 +137,93 @@ export default function App() {
       </label>
 
       {error && <p>Error: {error}</p>}
-
       {!dashboard && !error && <p>Loading...</p>}
 
       {dashboard && (
         <>
-          <p>Updated: {new Date(dashboard.generated_at).toLocaleTimeString()}</p>
+          <p>Updated: {formatTime(dashboard.generated_at)}</p>
 
           <section>
             <h2>Weather</h2>
 
-            {dashboard.weather.current && (
-              <section>
-                <h3>Current</h3>
-                <p>{dashboard.weather.current.location_name}</p>
-                <p>
-                  {dashboard.weather.current.temperature_f}°F, feels like{" "}
-                  {dashboard.weather.current.apparent_temperature_f}°F
-                </p>
-                <p>
-                  Wind: {dashboard.weather.current.wind_speed_mph} mph, gusts{" "}
-                  {dashboard.weather.current.wind_gust_mph} mph
-                </p>
-              </section>
-            )}
+            <section>
+              <h3>Current</h3>
+
+              {dashboard.weather.current ? (
+                <>
+                  <p>{dashboard.weather.current.location_name}</p>
+                  <p>
+                    Temperature: {dashboard.weather.current.temperature_f}°F
+                  </p>
+                  <p>
+                    Feels like:{" "}
+                    {dashboard.weather.current.apparent_temperature_f}°F
+                  </p>
+                  <p>
+                    Precipitation:{" "}
+                    {dashboard.weather.current.precipitation_inches} in
+                  </p>
+                  <p>
+                    Wind: {dashboard.weather.current.wind_speed_mph} mph
+                  </p>
+                  <p>
+                    Gusts: {dashboard.weather.current.wind_gust_mph} mph
+                  </p>
+                  <p>
+                    Wind direction:{" "}
+                    {dashboard.weather.current.wind_direction_degrees}°
+                  </p>
+                  <p>
+                    Cloud cover: {dashboard.weather.current.cloud_cover}%
+                  </p>
+                  <p>Day/night: {dayNight(dashboard.weather.current.is_day)}</p>
+                  <p>
+                    Weather code: {dashboard.weather.current.weather_code}
+                  </p>
+                  <p>
+                    Observed: {formatTime(dashboard.weather.current.forecast_for)}
+                  </p>
+                </>
+              ) : (
+                <p>No current weather.</p>
+              )}
+            </section>
 
             <section>
-              <h3>Daily</h3>
-              {dashboard.weather.daily.map((day) => (
-                <div key={day.forecast_for}>
-                  <strong>
-                    {new Date(day.forecast_for).toLocaleDateString()}
-                  </strong>
-                  <p>
-                    High {day.temperature_max_f}°F / Low{" "}
-                    {day.temperature_min_f}°F
-                  </p>
-                  <p>
-                    Rain: {day.precipitation_probability}% | UV: {day.uv_index}
-                  </p>
+              <h3>Next 6 Hours</h3>
+
+              {upcomingHourly.map((hour) => (
+                <div key={hour.forecast_for}>
+                  <strong>{formatTime(hour.forecast_for)}</strong>
+                  <p>Temperature: {hour.temperature_f}°F</p>
+                  <p>Feels like: {hour.apparent_temperature_f}°F</p>
+                  <p>Rain chance: {hour.precipitation_probability}%</p>
+                  <p>Precipitation: {hour.precipitation_inches} in</p>
+                  <p>Wind: {hour.wind_speed_mph} mph</p>
+                  <p>Gusts: {hour.wind_gust_mph} mph</p>
+                  <p>Wind direction: {hour.wind_direction_degrees}°</p>
+                  <p>UV: {hour.uv_index}</p>
+                  <p>Cloud cover: {hour.cloud_cover}%</p>
+                  <p>Day/night: {dayNight(hour.is_day)}</p>
+                  <p>Weather code: {hour.weather_code}</p>
                 </div>
               ))}
             </section>
 
             <section>
-              <h3>Next 6 Hours</h3>
-              {upcomingHourly.map((hour) => (
-                <div key={hour.forecast_for}>
-                  <strong>
-                    {new Date(hour.forecast_for).toLocaleTimeString([], {
-                      hour: "numeric",
-                      minute: "2-digit",
-                    })}
-                  </strong>
-                  <span>
-                    {" "}
-                    — {hour.temperature_f}°F, rain{" "}
-                    {hour.precipitation_probability}%, wind{" "}
-                    {hour.wind_speed_mph} mph
-                  </span>
+              <h3>Daily</h3>
+
+              {dashboard.weather.daily.map((day) => (
+                <div key={day.forecast_for}>
+                  <strong>{formatDate(day.forecast_for)}</strong>
+                  <p>High: {day.temperature_max_f}°F</p>
+                  <p>Low: {day.temperature_min_f}°F</p>
+                  <p>Rain chance: {day.precipitation_probability}%</p>
+                  <p>Precipitation: {day.precipitation_inches} in</p>
+                  <p>UV max: {day.uv_index}</p>
+                  <p>Sunrise: {formatTime(day.sunrise)}</p>
+                  <p>Sunset: {formatTime(day.sunset)}</p>
+                  <p>Weather code: {day.weather_code}</p>
                 </div>
               ))}
             </section>

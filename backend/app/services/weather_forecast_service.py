@@ -33,6 +33,9 @@ class WeatherForecastService:
                     weather_code=current.get("weather_code"),
                     wind_speed_mph=current.get("wind_speed_10m"),
                     wind_gust_mph=current.get("wind_gusts_10m"),
+                    wind_direction_degrees=current.get("wind_direction_10m"),
+                    cloud_cover=current.get("cloud_cover"),
+                    is_day=current.get("is_day"),
                 )
             )
 
@@ -54,6 +57,9 @@ class WeatherForecastService:
                         wind_speed_mph=hourly["wind_speed_10m"][i],
                         wind_gust_mph=hourly["wind_gusts_10m"][i],
                         uv_index=hourly["uv_index"][i],
+                        wind_direction_degrees=hourly["wind_direction_10m"][i],
+                        cloud_cover=hourly["cloud_cover"][i],
+                        is_day=hourly["is_day"][i],
                     )
                 )
 
@@ -75,6 +81,7 @@ class WeatherForecastService:
                         uv_index=daily["uv_index_max"][i],
                         sunrise=datetime.fromisoformat(daily["sunrise"][i]),
                         sunset=datetime.fromisoformat(daily["sunset"][i]),
+                        
                     )
                 )
 

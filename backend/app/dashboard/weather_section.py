@@ -21,21 +21,27 @@ class WeatherDashboardSection:
         end: datetime,
         location_key: str,
     ) -> WeatherSection:
+        latest_current = self.weather_service.get_latest_current(
+            location_key=location_key,
+        )
+
         forecasts = self.weather_service.list_forecasts_between(
             start=start,
             end=end,
             location_key=location_key,
         )
 
-        current: WeatherCurrent | None = None
+        current = (
+            WeatherCurrent.model_validate(latest_current)
+            if latest_current
+            else None
+        )
+
         hourly: list[WeatherHourly] = []
         daily: list[WeatherDaily] = []
 
         for forecast in forecasts:
-            if forecast.granularity == "current":
-                current = WeatherCurrent.model_validate(forecast)
-
-            elif forecast.granularity == "hourly":
+            if forecast.granularity == "hourly":
                 hourly.append(WeatherHourly.model_validate(forecast))
 
             elif forecast.granularity == "daily":

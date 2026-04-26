@@ -91,3 +91,15 @@ class WeatherForecastService:
             end=end,
             location_key=location_key,
         )
+    
+    def get_latest_current(
+        self,
+        location_key: str,
+    ) -> WeatherForecast | None:
+        return self.repo.get_latest_current(location_key=location_key)
+
+    def delete_old_forecasts(
+        self,
+        before: datetime,
+    ) -> int:
+        return self.repo.delete_old_forecasts(before=before)

@@ -15,3 +15,8 @@ async def ingest_weather_forecast(
 ):
     pipeline = WeatherForecastIngestPipeline(db)
     return await pipeline.run_for_location(location_key)
+
+@router.post("/ingest-weather-forecast-all")
+async def ingest_weather_forecast_all(db: Session = Depends(get_db)):
+    pipeline = WeatherForecastIngestPipeline(db)
+    return await pipeline.run_for_all_active_locations()

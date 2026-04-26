@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 
+type Location = {
+  key: string;
+  name: string;
+};
+
 type WeatherCurrent = {
   location_name: string;
   forecast_for: string;
   temperature_f: number | null;
   apparent_temperature_f: number | null;
-  precipitation_inches: number | null;
   wind_speed_mph: number | null;
   wind_gust_mph: number | null;
 };
@@ -13,10 +17,8 @@ type WeatherCurrent = {
 type WeatherHourly = {
   forecast_for: string;
   temperature_f: number | null;
-  apparent_temperature_f: number | null;
   precipitation_probability: number | null;
   wind_speed_mph: number | null;
-  uv_index: number | null;
 };
 
 type WeatherDaily = {
@@ -24,16 +26,11 @@ type WeatherDaily = {
   temperature_max_f: number | null;
   temperature_min_f: number | null;
   precipitation_probability: number | null;
-  precipitation_inches: number | null;
   uv_index: number | null;
-  sunrise: string | null;
-  sunset: string | null;
 };
 
 type Dashboard = {
   generated_at: string;
-  start: string;
-  end: string;
   weather: {
     current: WeatherCurrent | null;
     hourly: WeatherHourly[];
@@ -42,14 +39,31 @@ type Dashboard = {
 };
 
 export default function App() {
+  const [locations, setLocations] = useState<Location[]>([]);
+  const [selectedLocationKey, setSelectedLocationKey] =
+    useState("okaloosa_island");
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    fetch("/api/locations")
+      .then((res) => {
+        if (!res.ok) throw new Error(`Locations HTTP ${res.status}`);
+        return res.json();
+      })
+      .then(setLocations)
+      .catch((err) => setError(err.message));
+  }, []);
+
+  useEffect(() => {
     async function loadDashboard() {
       try {
-        const res = await fetch("/api/dashboard");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const res = await fetch(
+          `/api/dashboard?location_key=${selectedLocationKey}`
+        );
+
+        if (!res.ok) throw new Error(`Dashboard HTTP ${res.status}`);
+
         setDashboard(await res.json());
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
@@ -60,17 +74,9 @@ export default function App() {
     const id = setInterval(loadDashboard, 60_000);
 
     return () => clearInterval(id);
-  }, []);
+  }, [selectedLocationKey]);
 
-  if (error) {
-    return <main>Error: {error}</main>;
-  }
-
-  if (!dashboard) {
-    return <main>Loading...</main>;
-  }
-
-  const { current, hourly, daily } = dashboard.weather;
+  const hourly = dashboard?.weather.hourly ?? [];
   const now = new Date();
 
   const upcomingHourly = hourly
@@ -80,61 +86,87 @@ export default function App() {
   return (
     <main>
       <h1>At a Glance</h1>
-      <p>Updated: {new Date(dashboard.generated_at).toLocaleTimeString()}</p>
 
-      <section>
-        <h2>Weather</h2>
+      <label>
+        Location:{" "}
+        <select
+          value={selectedLocationKey}
+          onChange={(e) => setSelectedLocationKey(e.target.value)}
+        >
+          {locations.map((location) => (
+            <option key={location.key} value={location.key}>
+              {location.name}
+            </option>
+          ))}
+        </select>
+      </label>
 
-        {current && (
+      {error && <p>Error: {error}</p>}
+
+      {!dashboard && !error && <p>Loading...</p>}
+
+      {dashboard && (
+        <>
+          <p>Updated: {new Date(dashboard.generated_at).toLocaleTimeString()}</p>
+
           <section>
-            <h3>Current</h3>
-            <p>{current.location_name}</p>
-            <p>
-              {current.temperature_f}°F, feels like{" "}
-              {current.apparent_temperature_f}°F
-            </p>
-            <p>
-              Wind: {current.wind_speed_mph} mph, gusts{" "}
-              {current.wind_gust_mph} mph
-            </p>
+            <h2>Weather</h2>
+
+            {dashboard.weather.current && (
+              <section>
+                <h3>Current</h3>
+                <p>{dashboard.weather.current.location_name}</p>
+                <p>
+                  {dashboard.weather.current.temperature_f}°F, feels like{" "}
+                  {dashboard.weather.current.apparent_temperature_f}°F
+                </p>
+                <p>
+                  Wind: {dashboard.weather.current.wind_speed_mph} mph, gusts{" "}
+                  {dashboard.weather.current.wind_gust_mph} mph
+                </p>
+              </section>
+            )}
+
+            <section>
+              <h3>Daily</h3>
+              {dashboard.weather.daily.map((day) => (
+                <div key={day.forecast_for}>
+                  <strong>
+                    {new Date(day.forecast_for).toLocaleDateString()}
+                  </strong>
+                  <p>
+                    High {day.temperature_max_f}°F / Low{" "}
+                    {day.temperature_min_f}°F
+                  </p>
+                  <p>
+                    Rain: {day.precipitation_probability}% | UV: {day.uv_index}
+                  </p>
+                </div>
+              ))}
+            </section>
+
+            <section>
+              <h3>Next 6 Hours</h3>
+              {upcomingHourly.map((hour) => (
+                <div key={hour.forecast_for}>
+                  <strong>
+                    {new Date(hour.forecast_for).toLocaleTimeString([], {
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </strong>
+                  <span>
+                    {" "}
+                    — {hour.temperature_f}°F, rain{" "}
+                    {hour.precipitation_probability}%, wind{" "}
+                    {hour.wind_speed_mph} mph
+                  </span>
+                </div>
+              ))}
+            </section>
           </section>
-        )}
-
-        <section>
-          <h3>Daily</h3>
-          {daily.map((day) => (
-            <div key={day.forecast_for}>
-              <strong>{new Date(day.forecast_for).toLocaleDateString()}</strong>
-              <p>
-                High {day.temperature_max_f}°F / Low {day.temperature_min_f}°F
-              </p>
-              <p>
-                Rain: {day.precipitation_probability}% | UV: {day.uv_index}
-              </p>
-              <p>
-                Sunrise:{" "}
-                {day.sunrise ? new Date(day.sunrise).toLocaleTimeString() : "N/A"}{" "}
-                | Sunset:{" "}
-                {day.sunset ? new Date(day.sunset).toLocaleTimeString() : "N/A"}
-              </p>
-            </div>
-          ))}
-        </section>
-
-        <section>
-          <h3>Next 6 Hours</h3>
-          {upcomingHourly.map((hour) => (
-            <div key={hour.forecast_for}>
-              <strong>{new Date(hour.forecast_for).toLocaleTimeString()}</strong>
-              <span>
-                {" "}
-                — {hour.temperature_f}°F, rain{" "}
-                {hour.precipitation_probability}%, wind {hour.wind_speed_mph} mph
-              </span>
-            </div>
-          ))}
-        </section>
-      </section>
+        </>
+      )}
     </main>
   );
 }

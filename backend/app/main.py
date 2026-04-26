@@ -10,6 +10,8 @@ from app.models.weather_forecast import WeatherForecast
 from app.routers.dashboard import router as dashboard_router
 from app.routers.jobs import router as jobs_router
 from app.routers.weather_forecast import router as weather_forecast_router
+from app.models.location import Location
+from app.routers.locations import router as locations_router
 
 app = FastAPI(title="At A Glance API")
 
@@ -28,6 +30,7 @@ Base.metadata.create_all(bind=engine)
 app.include_router(weather_forecast_router)
 app.include_router(jobs_router)
 app.include_router(dashboard_router)
+app.include_router(locations_router)
 
 
 @app.get("/api/health")

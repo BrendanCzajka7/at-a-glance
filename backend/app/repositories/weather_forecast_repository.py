@@ -71,3 +71,30 @@ class WeatherForecastRepository:
             )
             .all()
         )
+    
+    def get_latest_current(
+        self,
+        location_key: str,
+    ) -> WeatherForecast | None:
+        return (
+            self.db.query(WeatherForecast)
+            .filter(
+                WeatherForecast.location_key == location_key,
+                WeatherForecast.granularity == "current",
+            )
+            .order_by(WeatherForecast.forecast_for.desc())
+            .first()
+        )
+
+    def delete_old_forecasts(
+        self,
+        before: datetime,
+    ) -> int:
+        deleted_count = (
+            self.db.query(WeatherForecast)
+            .filter(WeatherForecast.forecast_for < before)
+            .delete()
+        )
+
+        self.db.commit()
+        return deleted_count

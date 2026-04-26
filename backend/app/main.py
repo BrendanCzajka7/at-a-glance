@@ -6,11 +6,12 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.core.db import Base, engine
-from app.models.weather_snapshot import WeatherSnapshot
+from app.models.weather_forecast import WeatherForecast
+from app.routers.dashboard import router as dashboard_router
 from app.routers.jobs import router as jobs_router
-from app.routers.weather import router as weather_router
+from app.routers.weather_forecast import router as weather_forecast_router
 
-app = FastAPI(title="Weather Baseplate API")
+app = FastAPI(title="At A Glance API")
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,8 +25,9 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
-app.include_router(weather_router)
+app.include_router(weather_forecast_router)
 app.include_router(jobs_router)
+app.include_router(dashboard_router)
 
 
 @app.get("/api/health")

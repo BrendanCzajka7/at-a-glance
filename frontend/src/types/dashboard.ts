@@ -243,6 +243,35 @@ export type NoaaSection = {
   space_weather: NoaaSpaceWeather | null;
 };
 
+export type OceanConditions = {
+  station_id: string;
+  observed_at: string;
+  water_temperature_f: number | null;
+  wave_height_ft: number | null;
+};
+
+export type OceanSection = {
+  current: OceanConditions | null;
+};
+
+export type NaturePhoto = {
+  photo_date: string;
+  theme: string;
+
+  photographer: string | null;
+  photographer_url: string | null;
+
+  pexels_url: string | null;
+  image_url: string;
+
+  alt: string | null;
+  avg_color: string | null;
+};
+
+export type NatureSection = {
+  today: NaturePhoto | null;
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -266,4 +295,6 @@ export type Dashboard = {
   space: SpaceSection;
   usgs: UsgsSection;
   noaa: NoaaSection;
+  ocean: OceanSection;
+  nature: NatureSection;
 };

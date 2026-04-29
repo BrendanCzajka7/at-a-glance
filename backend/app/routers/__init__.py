@@ -18,6 +18,8 @@ from app.routers.ticketmaster import router as ticketmaster_router
 from app.routers.space_launches import router as space_launches_router
 from app.routers.usgs import router as usgs_router
 from app.routers.noaa import router as noaa_router
+from app.routers.ocean import router as ocean_router
+from app.routers.nature import router as nature_router
 
 api_router = APIRouter()
 
@@ -37,3 +39,5 @@ api_router.include_router(ticketmaster_router)
 api_router.include_router(space_launches_router)
 api_router.include_router(usgs_router)
 api_router.include_router(noaa_router)
+api_router.include_router(ocean_router)
+api_router.include_router(nature_router)

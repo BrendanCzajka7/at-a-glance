@@ -17,6 +17,8 @@ from app.models.usgs_earthquake import UsgsEarthquake
 from app.models.noaa_tide_prediction import NoaaTidePrediction
 from app.models.noaa_weather_alert import NoaaWeatherAlert
 from app.models.noaa_space_weather_report import NoaaSpaceWeatherReport
+from app.models.ocean_conditions import OceanConditions
+from app.models.nature_photo import NaturePhoto
 
 __all__ = [
     "Location",

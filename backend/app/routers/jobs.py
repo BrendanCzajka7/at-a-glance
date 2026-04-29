@@ -36,6 +36,12 @@ from app.schemas.usgs import UsgsEarthquakeRead
 
 from app.pipelines.ingest_noaa import NoaaIngestPipeline
 
+from app.pipelines.ingest_ocean_conditions import OceanConditionsIngestPipeline
+from app.schemas.ocean_conditions import OceanConditionsRead
+
+from app.pipelines.ingest_nature_photo import NaturePhotoIngestPipeline
+from app.schemas.nature import NaturePhotoRead
+
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 
@@ -240,4 +246,47 @@ async def ingest_noaa_all(db: Session = Depends(get_db)):
         event_type="ingest_noaa_all_failed",
         message="NOAA ingest failed",
         action=pipeline.run_all(),
+    )
+
+@router.post("/ingest-ocean-conditions", response_model=OceanConditionsRead | None)
+async def ingest_ocean_conditions(
+    location_key: str = Query(default="okaloosa_island"),
+    db: Session = Depends(get_db),
+):
+    pipeline = OceanConditionsIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="ndbc",
+        event_type="ingest_ocean_conditions_failed",
+        message=f"NDBC ocean conditions ingest failed for location_key={location_key}",
+        action=pipeline.run_for_location(location_key),
+    )
+
+
+@router.post("/ingest-ocean-conditions-all")
+async def ingest_ocean_conditions_all(db: Session = Depends(get_db)):
+    pipeline = OceanConditionsIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="ndbc",
+        event_type="ingest_ocean_conditions_all_failed",
+        message="NDBC ocean conditions ingest failed for all active locations",
+        action=pipeline.run_for_all_active_locations(),
+    )
+
+@router.post("/ingest-nature-photo", response_model=NaturePhotoRead | None)
+async def ingest_nature_photo(
+    theme: str | None = Query(default=None),
+    db: Session = Depends(get_db),
+):
+    pipeline = NaturePhotoIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="pexels",
+        event_type="ingest_nature_photo_failed",
+        message="Pexels nature photo ingest failed",
+        action=pipeline.run_for_today(theme=theme),
     )

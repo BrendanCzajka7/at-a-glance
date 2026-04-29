@@ -11,6 +11,8 @@ import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterC
 import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
 import { UsgsEarthToday } from "../features/usgs/UsgsEarthToday";
 import { NoaaToday } from "../features/noaa/NoaaToday";
+import { OceanConditionsToday } from "../features/ocean/OceanConditionsToday";
+import { NatureHero } from "../features/nature/NatureHero";
 
 type Props = {
   dashboard: Dashboard;
@@ -27,7 +29,9 @@ export function TodayView({ dashboard }: Props) {
 
       <section style={{ flex: 1 }}>
         <h2>Today</h2>
+        <NatureHero photo={dashboard.nature.today} />
         <WeatherTodaySummary weather={dashboard.weather} />
+        <OceanConditionsToday ocean={dashboard.ocean.current} />
         <NoaaToday
           tides={dashboard.noaa.tides_today}
           weatherAlerts={dashboard.noaa.weather_alerts}

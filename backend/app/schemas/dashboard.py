@@ -10,6 +10,8 @@ from app.schemas.ticketmaster_dashboard import TicketmasterSection
 from app.schemas.space_dashboard import SpaceSection
 from app.schemas.usgs_dashboard import UsgsSection
 from app.schemas.noaa_dashboard import NoaaSection
+from app.schemas.ocean_dashboard import OceanSection
+from app.schemas.nature_dashboard import NatureSection
 
 class DashboardRead(BaseModel):
     generated_at: datetime
@@ -23,3 +25,5 @@ class DashboardRead(BaseModel):
     space: SpaceSection
     usgs: UsgsSection
     noaa: NoaaSection
+    ocean: OceanSection
+    nature: NatureSection

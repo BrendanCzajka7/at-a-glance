@@ -6,12 +6,14 @@ from app.core.time import now_for_timezone
 from app.dashboard.weather_section import WeatherDashboardSection
 from app.schemas.dashboard import DashboardRead
 from app.services.location_service import LocationService
+from app.dashboard.nasa_section import NasaDashboardSection
 
 
 class DashboardService:
     def __init__(self, db: Session):
         self.location_service = LocationService(db)
         self.weather_section = WeatherDashboardSection(db)
+        self.nasa_section = NasaDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -30,4 +32,5 @@ class DashboardService:
                 end=end,
                 location_key=location.key,
             ),
+            nasa=self.nasa_section.build(),
         )

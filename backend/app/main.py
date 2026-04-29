@@ -7,6 +7,8 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core.db import Base, engine
 from app.models.weather_forecast import WeatherForecast
+from app.models.nasa_apod import NasaApod
+from app.routers.nasa import router as nasa_router
 from app.routers.dashboard import router as dashboard_router
 from app.routers.jobs import router as jobs_router
 from app.routers.weather_forecast import router as weather_forecast_router
@@ -31,6 +33,7 @@ app.include_router(weather_forecast_router)
 app.include_router(jobs_router)
 app.include_router(dashboard_router)
 app.include_router(locations_router)
+app.include_router(nasa_router)
 
 
 @app.get("/api/health")

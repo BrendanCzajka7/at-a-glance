@@ -6,6 +6,8 @@ from app.models.nasa_apod import NasaApod
 from app.models.nasa_space_weather_notification import NasaSpaceWeatherNotification
 from app.models.nasa_neo import NasaNeoCloseApproach
 from app.models.nasa_epic import NasaEpicImage
+from app.models.music_artist import MusicArtist
+from app.models.music_release import MusicRelease
 
 __all__ = [
     "Location",
@@ -14,4 +16,6 @@ __all__ = [
     "NasaSpaceWeatherNotification",
     "NasaNeoCloseApproach",
     "NasaEpicImage",
+    "MusicArtist",
+    "MusicRelease",
 ]

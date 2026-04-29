@@ -10,6 +10,7 @@ from app.routers.nasa_epic import router as nasa_epic_router
 from app.routers.nasa_neos import router as nasa_neos_router
 from app.routers.nasa_space_weather import router as nasa_space_weather_router
 from app.routers.weather_forecast import router as weather_forecast_router
+from app.routers.music import router as music_router
 
 api_router = APIRouter()
 
@@ -21,3 +22,4 @@ api_router.include_router(nasa_router)
 api_router.include_router(nasa_space_weather_router)
 api_router.include_router(nasa_epic_router)
 api_router.include_router(nasa_neos_router)
+api_router.include_router(music_router)

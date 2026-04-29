@@ -12,6 +12,8 @@ from app.pipelines.ingest_nasa_epic import NasaEpicIngestPipeline
 from app.pipelines.ingest_nasa_neos import NasaNeoIngestPipeline
 from app.schemas.nasa_epic import NasaEpicImageRead
 from app.schemas.nasa_neo import NasaNeoCloseApproachRead
+from app.pipelines.ingest_music_releases import MusicReleaseIngestPipeline
+from app.schemas.music import MusicReleaseRead
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -52,3 +54,8 @@ async def ingest_nasa_neos(db: Session = Depends(get_db)):
 async def ingest_nasa_epic(db: Session = Depends(get_db)):
     pipeline = NasaEpicIngestPipeline(db)
     return await pipeline.run()
+
+@router.post("/ingest-music-releases", response_model=list[MusicReleaseRead])
+async def ingest_music_releases(db: Session = Depends(get_db)):
+    pipeline = MusicReleaseIngestPipeline(db)
+    return await pipeline.run_for_all_artists()

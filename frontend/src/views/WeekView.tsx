@@ -4,6 +4,7 @@ import { weatherCodeLabel } from "../features/weather/weatherFormat";
 import type { Dashboard, NasaNeo, WeatherDay } from "../types/dashboard";
 import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
+import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
 
 type Props = {
   dashboard: Dashboard;
@@ -50,18 +51,29 @@ function concertsForDay(
   return concerts.filter((concert) => concert.event_date === dayKey);
 }
 
+function launchesForDay(
+  launches: Dashboard["space"]["week"],
+  dayKey: string
+) {
+  return launches.filter(
+    (launch) => new Date(launch.net).toISOString().slice(0, 10) === dayKey
+  );
+}
+
 function WeekDayBox({
   weatherDay,
   neos,
   musicReleases,
   movies,
   concerts,
+  launches,
 }: {
   weatherDay: WeatherDay;
   neos: NasaNeo[];
   musicReleases: Dashboard["music"]["week"];
   movies: Dashboard["tmdb"]["week"];
   concerts: Dashboard["ticketmaster"]["week"];
+  launches: Dashboard["space"]["week"];
 }) {
   return (
     <section
@@ -88,6 +100,7 @@ function WeekDayBox({
       <TmdbMoviesMini movies={movies} />
       <TicketmasterConcertsMini concerts={concerts} />
       <NasaNeoMini neos={neos} />
+      <SpaceLaunchesMini launches={launches} />
     </section>
   );
 }
@@ -106,6 +119,7 @@ export function WeekView({ dashboard }: Props) {
               key={day.forecast_for}
               weatherDay={day}
               neos={neosForDay(dashboard.nasa.neos.week, key)}
+              launches={launchesForDay(dashboard.space.week, key)}
               musicReleases={releasesForDay(dashboard.music.week, key)}
               movies={moviesForDay(dashboard.tmdb.week, key)}
               concerts={concertsForDay(dashboard.ticketmaster.week, key)}

@@ -28,6 +28,9 @@ from app.schemas.tmdb import TmdbMovieReleaseRead
 from app.schemas.ticketmaster import TicketmasterConcertRead
 from app.pipelines.ingest_ticketmaster_concerts import TicketmasterConcertIngestPipeline
 
+from app.pipelines.ingest_space_launches import SpaceLaunchIngestPipeline
+from app.schemas.space_launch import SpaceLaunchRead
+
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 
@@ -179,4 +182,16 @@ async def ingest_ticketmaster_concerts_all(
         event_type="ingest_ticketmaster_concerts_all_failed",
         message="Ticketmaster concert ingest failed for all active locations",
         action=pipeline.run_for_all_active_locations(radius_miles=radius_miles),
+    )
+
+@router.post("/ingest-space-launches", response_model=list[SpaceLaunchRead])
+async def ingest_space_launches(db: Session = Depends(get_db)):
+    pipeline = SpaceLaunchIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="launch_library",
+        event_type="ingest_space_launches_failed",
+        message="Launch Library 2 space launch ingest failed",
+        action=pipeline.run(),
     )

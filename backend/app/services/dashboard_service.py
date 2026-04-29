@@ -10,6 +10,7 @@ from app.schemas.dashboard import DashboardRead
 from app.services.location_service import LocationService
 from app.dashboard.tmdb_section import TmdbDashboardSection
 from app.dashboard.ticketmaster_section import TicketmasterDashboardSection
+from app.dashboard.space_section import SpaceDashboardSection
 
 class DashboardService:
     def __init__(self, db):
@@ -19,6 +20,7 @@ class DashboardService:
         self.music_section = MusicDashboardSection(db)
         self.tmdb_section = TmdbDashboardSection(db)
         self.ticketmaster_section = TicketmasterDashboardSection(db)
+        self.space_section = SpaceDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -44,4 +46,5 @@ class DashboardService:
                 start=start,
                 location_key=location.key,
             ),
+            space=self.space_section.build(start=start),
         )

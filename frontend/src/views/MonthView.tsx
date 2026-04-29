@@ -3,6 +3,7 @@ import { weatherCodeLabel } from "../features/weather/weatherFormat";
 import type { Dashboard, NasaNeo } from "../types/dashboard";
 import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
+import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
 
 type Props = {
   dashboard: Dashboard;
@@ -39,6 +40,15 @@ function concertsForDay(
 ) {
   return concerts.filter((concert) => concert.event_date === dayKey);
 }
+function launchesForDay(
+  launches: Dashboard["space"]["month"],
+  dayKey: string
+) {
+  return launches.filter(
+    (launch) => new Date(launch.net).toISOString().slice(0, 10) === dayKey
+  );
+}
+
 export function MonthView({ dashboard }: Props) {
   return (
     <section>
@@ -58,6 +68,7 @@ export function MonthView({ dashboard }: Props) {
           const date = new Date(day.forecast_for);
           const movies = moviesForDay(dashboard.tmdb.month, key);
           const concerts = concertsForDay(dashboard.ticketmaster.month, key);
+          const launches = launchesForDay(dashboard.space.month, key);
 
           return (
             <div
@@ -85,6 +96,7 @@ export function MonthView({ dashboard }: Props) {
               {concerts.length > 0 && (
                 <TicketmasterConcertsMini concerts={concerts} />
               )}
+              {launches.length > 0 && <SpaceLaunchesMini launches={launches} />}
             </div>
           );
         })}

@@ -12,6 +12,7 @@ from app.models.tmdb_watch_item import TmdbWatchItem
 from app.models.tmdb_movie_release import TmdbMovieRelease
 from app.models.app_event import AppEvent
 from app.models.ticketmaster_concert import TicketmasterConcert
+from app.models.space_launch import SpaceLaunch
 
 __all__ = [
     "Location",
@@ -26,4 +27,5 @@ __all__ = [
     "TmdbMovieRelease",
     "AppEvent",
     "TicketmasterConcert",
+    "SpaceLaunch",
 ]

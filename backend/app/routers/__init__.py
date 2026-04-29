@@ -15,6 +15,7 @@ from app.routers.tmdb import router as tmdb_router
 from app.routers.app_events import router as app_events_router
 from app.routers.health import router as health_router
 from app.routers.ticketmaster import router as ticketmaster_router
+from app.routers.space_launches import router as space_launches_router
 
 api_router = APIRouter()
 
@@ -31,3 +32,4 @@ api_router.include_router(tmdb_router)
 api_router.include_router(app_events_router)
 api_router.include_router(health_router)
 api_router.include_router(ticketmaster_router)
+api_router.include_router(space_launches_router)

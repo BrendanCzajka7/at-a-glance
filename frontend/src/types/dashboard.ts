@@ -130,6 +130,32 @@ export type TicketmasterSection = {
   month: TicketmasterConcert[];
 };
 
+export type SpaceLaunch = {
+  name: string;
+  net: string;
+
+  status_name: string | null;
+  mission_name: string | null;
+
+  provider_name: string | null;
+  rocket_name: string | null;
+
+  pad_name: string | null;
+  location_name: string | null;
+
+  image_url: string | null;
+  webcast_url: string | null;
+  source_url: string | null;
+
+  is_crewed: boolean | null;
+};
+
+export type SpaceSection = {
+  today: SpaceLaunch[];
+  week: SpaceLaunch[];
+  month: SpaceLaunch[];
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -150,4 +176,5 @@ export type Dashboard = {
   music: MusicSection;
   tmdb: TmdbSection;
   ticketmaster: TicketmasterSection;
+  space: SpaceSection;
 };

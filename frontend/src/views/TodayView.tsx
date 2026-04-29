@@ -8,6 +8,7 @@ import { WeatherUpcomingHours } from "../features/weather/WeatherUpcomingHours";
 import type { Dashboard } from "../types/dashboard";
 import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
+import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
 
 type Props = {
   dashboard: Dashboard;
@@ -35,6 +36,7 @@ export function TodayView({ dashboard }: Props) {
         <NasaApodSection nasa={dashboard.nasa} />
         <NasaEpicSection nasa={dashboard.nasa} />
         <NasaNeoToday neos={dashboard.nasa.neos.today} />
+        <SpaceLaunchesMini launches={dashboard.space.today} />
       </section>
     </div>
   );

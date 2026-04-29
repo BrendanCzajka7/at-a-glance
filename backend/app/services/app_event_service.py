@@ -10,7 +10,13 @@ class AppEventService:
     def __init__(self, db):
         self.repo = AppEventRepository(db)
 
-    def info(self, source: str, event_type: str, message: str, details: str | None = None):
+    def info(
+        self,
+        source: str,
+        event_type: str,
+        message: str,
+        details: str | None = None,
+    ):
         return self.repo.create(
             AppEvent(
                 level="info",
@@ -21,7 +27,13 @@ class AppEventService:
             )
         )
 
-    def error(self, source: str, event_type: str, message: str, exc: Exception | None = None):
+    def error(
+        self,
+        source: str,
+        event_type: str,
+        message: str,
+        exc: Exception | None = None,
+    ):
         return self.repo.create(
             AppEvent(
                 level="error",

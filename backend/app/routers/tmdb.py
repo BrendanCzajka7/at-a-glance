@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 
 from app.core.db import get_db
+from app.core.pipeline_logging import run_logged_pipeline
 from app.external.tmdb_client import TmdbClient
 from app.pipelines.ingest_tmdb_movies import TmdbMovieIngestPipeline
 from app.schemas.tmdb import (
@@ -65,10 +66,16 @@ async def add_watch_item(
     )
 
     if ingest_now:
-        await TmdbMovieIngestPipeline(db).run_for_watch_item(
-            kind=item.kind,
-            tmdb_id=item.tmdb_id,
-            name=item.name,
+        await run_logged_pipeline(
+            db=db,
+            source="tmdb",
+            event_type="ingest_tmdb_watch_item_failed",
+            message=f"TMDB ingest failed for {item.kind}={item.name}",
+            action=TmdbMovieIngestPipeline(db).run_for_watch_item(
+                kind=item.kind,
+                tmdb_id=item.tmdb_id,
+                name=item.name,
+            ),
         )
 
     return item

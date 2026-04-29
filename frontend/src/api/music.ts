@@ -48,3 +48,13 @@ export async function addArtist(
 
   return res.json();
 }
+
+export async function listArtists(): Promise<MusicArtist[]> {
+  const res = await fetch("/api/music/artists");
+
+  if (!res.ok) {
+    throw new Error(`List artists HTTP ${res.status}`);
+  }
+
+  return res.json();
+}

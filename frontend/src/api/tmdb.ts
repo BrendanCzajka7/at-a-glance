@@ -65,3 +65,13 @@ export async function addTmdbWatchItem(
 
   return res.json();
 }
+
+export async function listTmdbWatchItems(): Promise<TmdbWatchItem[]> {
+  const res = await fetch("/api/tmdb/watch-items");
+
+  if (!res.ok) {
+    throw new Error(`List TMDB watch items HTTP ${res.status}`);
+  }
+
+  return res.json();
+}

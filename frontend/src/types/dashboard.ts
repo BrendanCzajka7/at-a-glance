@@ -38,6 +38,20 @@ export type WeatherDay = {
   weather_code: number | null;
 };
 
+export type NasaApod = {
+  apod_date: string;
+  title: string;
+  explanation: string;
+  image_url: string | null;
+  hd_image_url: string | null;
+  media_type: string;
+  copyright: string | null;
+};
+
+export type NasaSection = {
+  apod: NasaApod | null;
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -54,4 +68,5 @@ export type Dashboard = {
       days: WeatherDay[];
     };
   };
+  nasa: NasaSection;
 };

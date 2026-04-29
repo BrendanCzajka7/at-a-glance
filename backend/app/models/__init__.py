@@ -11,6 +11,7 @@ from app.models.music_release import MusicRelease
 from app.models.tmdb_watch_item import TmdbWatchItem
 from app.models.tmdb_movie_release import TmdbMovieRelease
 from app.models.app_event import AppEvent
+from app.models.ticketmaster_concert import TicketmasterConcert
 
 __all__ = [
     "Location",
@@ -24,4 +25,5 @@ __all__ = [
     "TmdbWatchItem",
     "TmdbMovieRelease",
     "AppEvent",
+    "TicketmasterConcert",
 ]

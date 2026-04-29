@@ -108,6 +108,28 @@ export type TmdbSection = {
   month: TmdbMovieRelease[];
 };
 
+export type TicketmasterConcert = {
+  name: string;
+  event_date: string;
+  event_time: string | null;
+
+  venue_name: string | null;
+  city: string | null;
+  state: string | null;
+
+  genre: string | null;
+  sub_genre: string | null;
+
+  image_url: string | null;
+  source_url: string | null;
+};
+
+export type TicketmasterSection = {
+  today: TicketmasterConcert[];
+  week: TicketmasterConcert[];
+  month: TicketmasterConcert[];
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -127,4 +149,5 @@ export type Dashboard = {
   nasa: NasaSection;
   music: MusicSection;
   tmdb: TmdbSection;
+  ticketmaster: TicketmasterSection;
 };

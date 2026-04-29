@@ -9,6 +9,7 @@ from app.dashboard.music_section import MusicDashboardSection
 from app.schemas.dashboard import DashboardRead
 from app.services.location_service import LocationService
 from app.dashboard.tmdb_section import TmdbDashboardSection
+from app.dashboard.ticketmaster_section import TicketmasterDashboardSection
 
 class DashboardService:
     def __init__(self, db):
@@ -17,6 +18,7 @@ class DashboardService:
         self.nasa_section = NasaDashboardSection(db)
         self.music_section = MusicDashboardSection(db)
         self.tmdb_section = TmdbDashboardSection(db)
+        self.ticketmaster_section = TicketmasterDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -38,4 +40,8 @@ class DashboardService:
             nasa=self.nasa_section.build(start=start),
             music=self.music_section.build(start=start),
             tmdb=self.tmdb_section.build(start=start),
+            ticketmaster=self.ticketmaster_section.build(
+                start=start,
+                location_key=location.key,
+            ),
         )

@@ -6,6 +6,7 @@ from app.schemas.music_dashboard import MusicSection
 from app.schemas.nasa_dashboard import NasaSection
 from app.schemas.tmdb_dashboard import TmdbSection
 from app.schemas.weather_dashboard import WeatherSection
+from app.schemas.ticketmaster_dashboard import TicketmasterSection
 
 
 class DashboardRead(BaseModel):
@@ -16,3 +17,4 @@ class DashboardRead(BaseModel):
     nasa: NasaSection
     music: MusicSection
     tmdb: TmdbSection
+    ticketmaster: TicketmasterSection

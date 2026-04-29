@@ -4,6 +4,7 @@ import type {
   NoaaWeatherAlert,
 } from "../../types/dashboard";
 import { formatTime } from "../weather/weatherFormat";
+import { describeSpaceWeatherDay } from "./spaceWeatherFormat";
 
 type Props = {
   tides: NoaaTidePrediction[];
@@ -65,34 +66,31 @@ export function NoaaToday({ tides, weatherAlerts, spaceWeather }: Props) {
         ))}
       </div>
         <div>
-        <strong>Space Weather</strong>
+            <strong>Space Weather</strong>
 
-        {!spaceWeather && <p>No SWPC report ingested yet.</p>}
+            {!spaceWeather && <p>No SWPC report ingested yet.</p>}
 
-        {spaceWeather && (
-            <>
-            <p>
-                Current: R{spaceWeather.current_radio_blackout_scale ?? "0"} · S
-                {spaceWeather.current_solar_radiation_scale ?? "0"} · G
-                {spaceWeather.current_geomagnetic_scale ?? "0"}
-            </p>
-
-            {spaceWeather.forecast_days[0] && (
+            {spaceWeather && (
+                <>
                 <p>
-                Today outlook: R1-R2{" "}
-                {spaceWeather.forecast_days[0].radio_blackout_minor_prob ?? 0}%,
-                R3-R5{" "}
-                {spaceWeather.forecast_days[0].radio_blackout_major_prob ?? 0}%,
-                S1+{" "}
-                {spaceWeather.forecast_days[0].solar_radiation_storm_prob ?? 0}%,
-                G{spaceWeather.forecast_days[0].geomagnetic_scale ?? "0"}
+                    Current: R{spaceWeather.current_radio_blackout_scale ?? "0"} · S
+                    {spaceWeather.current_solar_radiation_scale ?? "0"} · G
+                    {spaceWeather.current_geomagnetic_scale ?? "0"}
                 </p>
-            )}
 
-            <p>Recent SWPC alerts: {spaceWeather.alert_count}</p>
-            </>
-        )}
-        </div>
+                {spaceWeather.forecast_days[0] && (
+                    <div>
+                    <strong>Today outlook</strong>
+                    {describeSpaceWeatherDay(spaceWeather.forecast_days[0]).map((line) => (
+                        <p key={line}>{line}</p>
+                    ))}
+                    </div>
+                )}
+
+                <p>Recent SWPC alerts: {spaceWeather.alert_count}</p>
+                </>
+            )}
+            </div>
     </section>
   );
 }

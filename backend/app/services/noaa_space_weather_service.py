@@ -5,6 +5,7 @@ from app.models.noaa_space_weather_report import NoaaSpaceWeatherReport
 from app.repositories.noaa_space_weather_repository import (
     NoaaSpaceWeatherRepository,
 )
+from app.schemas.noaa_dashboard import NoaaSpaceWeatherDayCard
 
 
 class NoaaSpaceWeatherService:
@@ -28,101 +29,136 @@ class NoaaSpaceWeatherService:
     def get_latest(self) -> NoaaSpaceWeatherReport | None:
         return self.repo.get_latest()
 
-    def summarize_scales(self, report: NoaaSpaceWeatherReport) -> str | None:
+    def get_scales_data(self, report: NoaaSpaceWeatherReport) -> dict:
         if not report.scales_json:
-            return None
+            return {}
 
         try:
             data = json.loads(report.scales_json)
         except json.JSONDecodeError:
+            return {}
+
+        return data if isinstance(data, dict) else {}
+
+    def forecast_days(
+        self,
+        report: NoaaSpaceWeatherReport,
+    ) -> list[NoaaSpaceWeatherDayCard]:
+        data = self.get_scales_data(report)
+
+        return [
+            self._forecast_day(data.get("1"), "Today"),
+            self._forecast_day(data.get("2"), "Tomorrow"),
+            self._forecast_day(data.get("3"), "Day 3"),
+        ]
+
+    def current_scale_value(
+        self,
+        report: NoaaSpaceWeatherReport,
+        category: str,
+        field: str,
+    ) -> str | None:
+        data = self.get_scales_data(report)
+        current = data.get("0") or {}
+        category_data = current.get(category) or {}
+
+        value = category_data.get(field)
+
+        if value is None:
             return None
 
-        if not isinstance(data, dict):
-            return None
+        return str(value)
 
-        parts: list[str] = []
+    def alert_count(self, report: NoaaSpaceWeatherReport) -> int:
+        return len(_load_alerts(report))
 
-        for key in ["R", "S", "G"]:
-            value = data.get(key)
-            if value is None:
-                continue
-
-            if isinstance(value, dict):
-                scale = value.get("Scale") or value.get("scale") or value.get("level")
-                text = value.get("Text") or value.get("text")
-                if scale or text:
-                    parts.append(f"{key}: {scale or text}")
-            else:
-                parts.append(f"{key}: {value}")
-
-        return " · ".join(parts) if parts else None
-
-    def summarize_alert_titles(self, report: NoaaSpaceWeatherReport) -> list[str]:
-        if not report.alerts_json:
-            return []
-
-        try:
-            data = json.loads(report.alerts_json)
-        except json.JSONDecodeError:
-            return []
-
-        if not isinstance(data, list):
-            return []
-
+    def recent_alert_titles(
+        self,
+        report: NoaaSpaceWeatherReport,
+        limit: int = 3,
+    ) -> list[str]:
+        alerts = _load_alerts(report)
         titles: list[str] = []
 
-        for item in data[:10]:
-            if not isinstance(item, dict):
-                continue
-
-            title = (
-                item.get("message")
-                or item.get("product_id")
-                or item.get("issue_datetime")
-                or item.get("serial_number")
-            )
-
+        for item in alerts[:limit]:
+            title = _compact_alert_title(item)
             if title:
-                titles.append(str(title))
+                titles.append(title)
 
         return titles
 
-    def summarize_forecast_text(self, report: NoaaSpaceWeatherReport) -> str | None:
-        text = report.three_day_forecast_text
+    def _forecast_day(
+        self,
+        raw: dict | None,
+        label: str,
+    ) -> NoaaSpaceWeatherDayCard:
+        raw = raw or {}
 
-        if not text:
-            return None
+        r = raw.get("R") or {}
+        s = raw.get("S") or {}
+        g = raw.get("G") or {}
 
-        lines = [
-            line.strip()
-            for line in text.splitlines()
-            if line.strip()
-        ]
+        return NoaaSpaceWeatherDayCard(
+            label=label,
+            date=raw.get("DateStamp"),
+            radio_blackout_minor_prob=_safe_int(r.get("MinorProb")),
+            radio_blackout_major_prob=_safe_int(r.get("MajorProb")),
+            solar_radiation_storm_prob=_safe_int(s.get("Prob")),
+            geomagnetic_scale=_safe_str(g.get("Scale")),
+            geomagnetic_text=_safe_str(g.get("Text")),
+        )
 
-        interesting = []
 
-        patterns = [
-            "R1-R2",
-            "R3-R5",
-            "S1",
-            "G1",
-            "G2",
-            "G3",
-            "G4",
-            "G5",
-            "Geomagnetic",
-            "Solar Radiation",
-            "Radio Blackout",
-        ]
+def _load_alerts(report: NoaaSpaceWeatherReport) -> list[dict]:
+    if not report.alerts_json:
+        return []
 
-        for line in lines:
-            if any(pattern in line for pattern in patterns):
-                interesting.append(re.sub(r"\s+", " ", line))
+    try:
+        data = json.loads(report.alerts_json)
+    except json.JSONDecodeError:
+        return []
 
-            if len(interesting) >= 6:
-                break
+    return data if isinstance(data, list) else []
 
-        if interesting:
-            return " | ".join(interesting)
 
-        return " ".join(lines[:6]) if lines else None
+def _compact_alert_title(item: dict) -> str | None:
+    message = item.get("message") or item.get("message_body")
+
+    if isinstance(message, str):
+        for line in message.splitlines():
+            cleaned = _clean_line(line)
+
+            if cleaned.startswith(("ALERT:", "WATCH:", "WARNING:", "SUMMARY:", "EXTENDED WARNING:")):
+                return cleaned
+
+    product_id = item.get("product_id")
+    issue_datetime = item.get("issue_datetime")
+
+    if product_id and issue_datetime:
+        return f"{product_id} · {issue_datetime}"
+
+    if product_id:
+        return str(product_id)
+
+    return None
+
+
+def _safe_int(value) -> int | None:
+    if value is None:
+        return None
+
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _safe_str(value) -> str | None:
+    if value is None:
+        return None
+
+    return str(value)
+
+
+def _clean_line(value: str) -> str:
+    return re.sub(r"\s+", " ", value).strip()

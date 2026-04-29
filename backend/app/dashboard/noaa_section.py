@@ -41,13 +41,41 @@ class NoaaDashboardSection:
         if latest_space_weather:
             space_weather = NoaaSpaceWeatherCard(
                 fetched_at=latest_space_weather.fetched_at,
-                current_scales_summary=self.space_weather_service.summarize_scales(
+                current_radio_blackout_scale=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "R",
+                    "Scale",
+                ),
+                current_radio_blackout_text=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "R",
+                    "Text",
+                ),
+                current_solar_radiation_scale=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "S",
+                    "Scale",
+                ),
+                current_solar_radiation_text=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "S",
+                    "Text",
+                ),
+                current_geomagnetic_scale=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "G",
+                    "Scale",
+                ),
+                current_geomagnetic_text=self.space_weather_service.current_scale_value(
+                    latest_space_weather,
+                    "G",
+                    "Text",
+                ),
+                forecast_days=self.space_weather_service.forecast_days(
                     latest_space_weather
                 ),
-                forecast_summary=self.space_weather_service.summarize_forecast_text(
-                    latest_space_weather
-                ),
-                alert_titles=self.space_weather_service.summarize_alert_titles(
+                alert_count=self.space_weather_service.alert_count(latest_space_weather),
+                recent_alert_titles=self.space_weather_service.recent_alert_titles(
                     latest_space_weather
                 ),
             )

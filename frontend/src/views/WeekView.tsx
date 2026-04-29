@@ -1,10 +1,16 @@
 import { MusicReleasesMini } from "../features/music/MusicReleasesMini";
+import { NoaaSpaceWeatherMini } from "../features/noaa/NoaaSpaceWeatherMini";
 import { NasaNeoMini } from "../features/nasa/NasaNeoMini";
-import { weatherCodeLabel } from "../features/weather/weatherFormat";
-import type { Dashboard, NasaNeo, WeatherDay } from "../types/dashboard";
-import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
-import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
 import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
+import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
+import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
+import { weatherCodeLabel } from "../features/weather/weatherFormat";
+import type {
+  Dashboard,
+  NasaNeo,
+  NoaaSpaceWeatherDay,
+  WeatherDay,
+} from "../types/dashboard";
 
 type Props = {
   dashboard: Dashboard;
@@ -33,10 +39,6 @@ function releasesForDay(
   return releases.filter((release) => release.release_date === dayKey);
 }
 
-function round(value: number | null) {
-  if (value === null || value === undefined) return "N/A";
-  return Math.round(value);
-}
 function moviesForDay(
   movies: Dashboard["tmdb"]["week"],
   dayKey: string
@@ -60,6 +62,18 @@ function launchesForDay(
   );
 }
 
+function spaceWeatherForDay(
+  days: NoaaSpaceWeatherDay[] | undefined,
+  dayKey: string
+): NoaaSpaceWeatherDay | null {
+  return days?.find((item) => item.date === dayKey) ?? null;
+}
+
+function round(value: number | null) {
+  if (value === null || value === undefined) return "N/A";
+  return Math.round(value);
+}
+
 function WeekDayBox({
   weatherDay,
   neos,
@@ -67,6 +81,7 @@ function WeekDayBox({
   movies,
   concerts,
   launches,
+  spaceWeatherDay,
 }: {
   weatherDay: WeatherDay;
   neos: NasaNeo[];
@@ -74,6 +89,7 @@ function WeekDayBox({
   movies: Dashboard["tmdb"]["week"];
   concerts: Dashboard["ticketmaster"]["week"];
   launches: Dashboard["space"]["week"];
+  spaceWeatherDay: NoaaSpaceWeatherDay | null;
 }) {
   return (
     <section
@@ -96,11 +112,17 @@ function WeekDayBox({
         <p>UV: {weatherDay.uv_index ?? "N/A"}</p>
       </div>
 
-      <MusicReleasesMini releases={musicReleases} />
-      <TmdbMoviesMini movies={movies} />
+      <NoaaSpaceWeatherMini day={spaceWeatherDay} />
+
       <TicketmasterConcertsMini concerts={concerts} />
-      <NasaNeoMini neos={neos} />
+
+      <MusicReleasesMini releases={musicReleases} />
+
+      <TmdbMoviesMini movies={movies} />
+
       <SpaceLaunchesMini launches={launches} />
+
+      <NasaNeoMini neos={neos} />
     </section>
   );
 }
@@ -119,10 +141,14 @@ export function WeekView({ dashboard }: Props) {
               key={day.forecast_for}
               weatherDay={day}
               neos={neosForDay(dashboard.nasa.neos.week, key)}
-              launches={launchesForDay(dashboard.space.week, key)}
               musicReleases={releasesForDay(dashboard.music.week, key)}
               movies={moviesForDay(dashboard.tmdb.week, key)}
               concerts={concertsForDay(dashboard.ticketmaster.week, key)}
+              launches={launchesForDay(dashboard.space.week, key)}
+              spaceWeatherDay={spaceWeatherForDay(
+                dashboard.noaa.space_weather?.forecast_days,
+                key
+              )}
             />
           );
         })}

@@ -206,11 +206,35 @@ export type NoaaWeatherAlert = {
   source_url: string | null;
 };
 
+export type NoaaSpaceWeatherDay = {
+  label: string;
+  date: string | null;
+
+  radio_blackout_minor_prob: number | null;
+  radio_blackout_major_prob: number | null;
+
+  solar_radiation_storm_prob: number | null;
+
+  geomagnetic_scale: string | null;
+  geomagnetic_text: string | null;
+};
+
 export type NoaaSpaceWeather = {
   fetched_at: string | null;
-  current_scales_summary: string | null;
-  forecast_summary: string | null;
-  alert_titles: string[];
+
+  current_radio_blackout_scale: string | null;
+  current_radio_blackout_text: string | null;
+
+  current_solar_radiation_scale: string | null;
+  current_solar_radiation_text: string | null;
+
+  current_geomagnetic_scale: string | null;
+  current_geomagnetic_text: string | null;
+
+  forecast_days: NoaaSpaceWeatherDay[];
+
+  alert_count: number;
+  recent_alert_titles: string[];
 };
 
 export type NoaaSection = {

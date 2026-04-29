@@ -30,11 +30,35 @@ class NoaaWeatherAlertCard(BaseModel):
     source_url: str | None = None
 
 
+class NoaaSpaceWeatherDayCard(BaseModel):
+    label: str
+    date: str | None = None
+
+    radio_blackout_minor_prob: int | None = None
+    radio_blackout_major_prob: int | None = None
+
+    solar_radiation_storm_prob: int | None = None
+
+    geomagnetic_scale: str | None = None
+    geomagnetic_text: str | None = None
+
+
 class NoaaSpaceWeatherCard(BaseModel):
     fetched_at: datetime | None = None
-    current_scales_summary: str | None = None
-    forecast_summary: str | None = None
-    alert_titles: list[str]
+
+    current_radio_blackout_scale: str | None = None
+    current_radio_blackout_text: str | None = None
+
+    current_solar_radiation_scale: str | None = None
+    current_solar_radiation_text: str | None = None
+
+    current_geomagnetic_scale: str | None = None
+    current_geomagnetic_text: str | None = None
+
+    forecast_days: list[NoaaSpaceWeatherDayCard]
+
+    alert_count: int
+    recent_alert_titles: list[str]
 
 
 class NoaaSection(BaseModel):

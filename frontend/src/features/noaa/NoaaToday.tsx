@@ -64,32 +64,35 @@ export function NoaaToday({ tides, weatherAlerts, spaceWeather }: Props) {
           </details>
         ))}
       </div>
-
-      <div>
+        <div>
         <strong>Space Weather</strong>
 
         {!spaceWeather && <p>No SWPC report ingested yet.</p>}
 
         {spaceWeather && (
-          <>
-            {spaceWeather.current_scales_summary && (
-              <p>{spaceWeather.current_scales_summary}</p>
+            <>
+            <p>
+                Current: R{spaceWeather.current_radio_blackout_scale ?? "0"} · S
+                {spaceWeather.current_solar_radiation_scale ?? "0"} · G
+                {spaceWeather.current_geomagnetic_scale ?? "0"}
+            </p>
+
+            {spaceWeather.forecast_days[0] && (
+                <p>
+                Today outlook: R1-R2{" "}
+                {spaceWeather.forecast_days[0].radio_blackout_minor_prob ?? 0}%,
+                R3-R5{" "}
+                {spaceWeather.forecast_days[0].radio_blackout_major_prob ?? 0}%,
+                S1+{" "}
+                {spaceWeather.forecast_days[0].solar_radiation_storm_prob ?? 0}%,
+                G{spaceWeather.forecast_days[0].geomagnetic_scale ?? "0"}
+                </p>
             )}
 
-            {spaceWeather.forecast_summary && (
-              <p>{spaceWeather.forecast_summary}</p>
-            )}
-
-            {spaceWeather.alert_titles.length > 0 && (
-              <ul>
-                {spaceWeather.alert_titles.slice(0, 5).map((title) => (
-                  <li key={title}>{title}</li>
-                ))}
-              </ul>
-            )}
-          </>
+            <p>Recent SWPC alerts: {spaceWeather.alert_count}</p>
+            </>
         )}
-      </div>
+        </div>
     </section>
   );
 }

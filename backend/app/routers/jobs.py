@@ -34,6 +34,8 @@ from app.schemas.space_launch import SpaceLaunchRead
 from app.pipelines.ingest_usgs_earthquakes import UsgsEarthquakeIngestPipeline
 from app.schemas.usgs import UsgsEarthquakeRead
 
+from app.pipelines.ingest_noaa import NoaaIngestPipeline
+
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 
@@ -209,4 +211,33 @@ async def ingest_usgs_earthquakes(db: Session = Depends(get_db)):
         event_type="ingest_usgs_earthquakes_failed",
         message="USGS earthquake ingest failed",
         action=pipeline.run(),
+    )
+
+
+@router.post("/ingest-noaa")
+async def ingest_noaa(
+    location_key: str = Query(default="okaloosa_island"),
+    db: Session = Depends(get_db),
+):
+    pipeline = NoaaIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="noaa",
+        event_type="ingest_noaa_failed",
+        message=f"NOAA ingest failed for location_key={location_key}",
+        action=pipeline.run_for_location(location_key),
+    )
+
+
+@router.post("/ingest-noaa-all")
+async def ingest_noaa_all(db: Session = Depends(get_db)):
+    pipeline = NoaaIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="noaa",
+        event_type="ingest_noaa_all_failed",
+        message="NOAA ingest failed",
+        action=pipeline.run_all(),
     )

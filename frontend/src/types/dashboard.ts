@@ -157,6 +157,68 @@ export type SpaceSection = {
   month: SpaceLaunch[];
 };
 
+export type UsgsEarthquake = {
+  title: string;
+  place: string | null;
+
+  magnitude: number | null;
+  event_time: string;
+
+  longitude: number | null;
+  latitude: number | null;
+  depth_km: number | null;
+
+  tsunami: number | null;
+  significance: number | null;
+  alert: string | null;
+  status: string | null;
+
+  source_url: string | null;
+};
+
+export type UsgsSection = {
+  largest_today: UsgsEarthquake | null;
+  most_significant_today: UsgsEarthquake | null;
+  tsunami_events_today: UsgsEarthquake[];
+  alert_events_today: UsgsEarthquake[];
+};
+
+export type NoaaTidePrediction = {
+  station_id: string;
+  prediction_time: string;
+  tide_type: string | null;
+  height_ft: number | null;
+};
+
+export type NoaaWeatherAlert = {
+  event: string;
+  headline: string | null;
+
+  severity: string | null;
+  urgency: string | null;
+  certainty: string | null;
+
+  effective: string | null;
+  expires: string | null;
+
+  description: string | null;
+  instruction: string | null;
+  source_url: string | null;
+};
+
+export type NoaaSpaceWeather = {
+  fetched_at: string | null;
+  current_scales_summary: string | null;
+  forecast_summary: string | null;
+  alert_titles: string[];
+};
+
+export type NoaaSection = {
+  tides_today: NoaaTidePrediction[];
+  weather_alerts: NoaaWeatherAlert[];
+  space_weather: NoaaSpaceWeather | null;
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -178,4 +240,6 @@ export type Dashboard = {
   tmdb: TmdbSection;
   ticketmaster: TicketmasterSection;
   space: SpaceSection;
+  usgs: UsgsSection;
+  noaa: NoaaSection;
 };

@@ -18,5 +18,6 @@ class Location(Base):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     timezone = Column(String, nullable=False)
+    noaa_tide_station_id = Column(String, nullable=True)
 
     is_active = Column(Boolean, default=True, nullable=False)

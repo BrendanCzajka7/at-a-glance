@@ -14,6 +14,9 @@ from app.models.app_event import AppEvent
 from app.models.ticketmaster_concert import TicketmasterConcert
 from app.models.space_launch import SpaceLaunch
 from app.models.usgs_earthquake import UsgsEarthquake
+from app.models.noaa_tide_prediction import NoaaTidePrediction
+from app.models.noaa_weather_alert import NoaaWeatherAlert
+from app.models.noaa_space_weather_report import NoaaSpaceWeatherReport
 
 __all__ = [
     "Location",

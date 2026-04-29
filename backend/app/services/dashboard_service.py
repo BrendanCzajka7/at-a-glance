@@ -12,6 +12,7 @@ from app.dashboard.tmdb_section import TmdbDashboardSection
 from app.dashboard.ticketmaster_section import TicketmasterDashboardSection
 from app.dashboard.space_section import SpaceDashboardSection
 from app.dashboard.usgs_section import UsgsDashboardSection
+from app.dashboard.noaa_section import NoaaDashboardSection
 
 class DashboardService:
     def __init__(self, db):
@@ -23,6 +24,7 @@ class DashboardService:
         self.ticketmaster_section = TicketmasterDashboardSection(db)
         self.space_section = SpaceDashboardSection(db)
         self.usgs_section = UsgsDashboardSection(db)
+        self.noaa_section = NoaaDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -51,4 +53,8 @@ class DashboardService:
             ),
             space=self.space_section.build(start=start),
             usgs=self.usgs_section.build(now=generated_at),
+            noaa=self.noaa_section.build(
+                now=generated_at,
+                location_key=location.key,
+            ),
         )

@@ -3,12 +3,9 @@ import { useEffect, useState } from "react";
 import { fetchDashboard, fetchLocations } from "./api/dashboard";
 import { LocationSelect } from "./components/LocationSelect";
 import { ViewTabs } from "./components/ViewTabs";
-import type { DashboardView } from "./components/ViewTabs";
 import type { Dashboard, Location } from "./types/dashboard";
-import { TodayView } from "./views/TodayView";
-import { WeekView } from "./views/WeekView";
-import { MonthView } from "./views/MonthView";
 import { formatTime } from "./features/weather/weatherFormat";
+import { getDashboardView, type DashboardView } from "./views/viewRegistry";
 
 export default function App() {
   const [locations, setLocations] = useState<Location[]>([]);
@@ -17,6 +14,8 @@ export default function App() {
   const [view, setView] = useState<DashboardView>("today");
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
+
+  const ActiveView = getDashboardView(view).Component;
 
   useEffect(() => {
     fetchLocations()
@@ -27,6 +26,7 @@ export default function App() {
   useEffect(() => {
     async function loadDashboard() {
       try {
+        setError("");
         setDashboard(await fetchDashboard(selectedLocationKey));
       } catch (err) {
         setError(err instanceof Error ? err.message : "Unknown error");
@@ -57,10 +57,7 @@ export default function App() {
       {dashboard && (
         <>
           <p>Updated: {formatTime(dashboard.generated_at)}</p>
-
-          {view === "today" && <TodayView dashboard={dashboard} />}
-          {view === "week" && <WeekView dashboard={dashboard} />}
-          {view === "month" && <MonthView dashboard={dashboard} />}
+          <ActiveView dashboard={dashboard} />
         </>
       )}
     </main>

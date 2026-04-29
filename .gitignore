@@ -1,11 +1,13 @@
 #-- general --
 .env
+code.txt
+printall.py
 #--- backend ---
 .venv
 __pycache__
 # --- frontend ---
 # Logs
-logs
+logss
 *.log
 npm-debug.log*
 yarn-debug.log*

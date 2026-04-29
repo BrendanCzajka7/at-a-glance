@@ -1,4 +1,4 @@
-export type DashboardView = "today" | "week" | "month";
+import { dashboardViews, type DashboardView } from "../views/viewRegistry";
 
 type Props = {
   value: DashboardView;
@@ -8,15 +8,15 @@ type Props = {
 export function ViewTabs({ value, onChange }: Props) {
   return (
     <div>
-      <button disabled={value === "today"} onClick={() => onChange("today")}>
-        Today
-      </button>
-      <button disabled={value === "week"} onClick={() => onChange("week")}>
-        Week
-      </button>
-      <button disabled={value === "month"} onClick={() => onChange("month")}>
-        Month
-      </button>
+      {dashboardViews.map((view) => (
+        <button
+          key={view.key}
+          disabled={value === view.key}
+          onClick={() => onChange(view.key)}
+        >
+          {view.label}
+        </button>
+      ))}
     </div>
   );
 }

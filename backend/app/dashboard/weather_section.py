@@ -1,12 +1,15 @@
-from datetime import datetime
+from datetime import datetime, time, timedelta
 
 from sqlalchemy.orm import Session
 
 from app.schemas.weather_dashboard import (
     WeatherCurrent,
-    WeatherDaily,
-    WeatherHourly,
+    WeatherDay,
+    WeatherHour,
+    WeatherMonth,
     WeatherSection,
+    WeatherToday,
+    WeatherWeek,
 )
 from app.services.weather_forecast_service import WeatherForecastService
 
@@ -21,34 +24,64 @@ class WeatherDashboardSection:
         end: datetime,
         location_key: str,
     ) -> WeatherSection:
-        latest_current = self.weather_service.get_latest_current(
-            location_key=location_key,
-        )
-
-        forecasts = self.weather_service.list_forecasts_between(
-            start=start,
-            end=end,
+        current_row = self.weather_service.get_latest_current(
             location_key=location_key,
         )
 
         current = (
-            WeatherCurrent.model_validate(latest_current)
-            if latest_current
+            WeatherCurrent.model_validate(current_row)
+            if current_row
             else None
         )
 
-        hourly: list[WeatherHourly] = []
-        daily: list[WeatherDaily] = []
+        today_start = datetime.combine(start.date(), time.min)
+        tomorrow_start = today_start + timedelta(days=1)
+        week_end = today_start + timedelta(days=7)
+        month_end = today_start + timedelta(days=31)
 
-        for forecast in forecasts:
-            if forecast.granularity == "hourly":
-                hourly.append(WeatherHourly.model_validate(forecast))
+        hourly_rows = self.weather_service.list_forecasts_between(
+            start=start,
+            end=tomorrow_start,
+            location_key=location_key,
+        )
 
-            elif forecast.granularity == "daily":
-                daily.append(WeatherDaily.model_validate(forecast))
+        daily_rows = self.weather_service.list_forecasts_between(
+            start=today_start,
+            end=month_end,
+            location_key=location_key,
+        )
+
+        hourly = [
+            WeatherHour.model_validate(row)
+            for row in hourly_rows
+            if row.granularity == "hourly"
+        ]
+
+        daily = [
+            WeatherDay.model_validate(row)
+            for row in daily_rows
+            if row.granularity == "daily"
+        ]
+
+        today_summary = daily[0] if daily else None
+        today_hours = hourly
+
+        next_hours = hourly[:6]
+
+        week_days = daily[:7]
+        month_days = daily
 
         return WeatherSection(
             current=current,
-            hourly=hourly,
-            daily=daily,
+            today=WeatherToday(
+                summary=today_summary,
+                hours=today_hours,
+            ),
+            next_hours=next_hours,
+            week=WeatherWeek(
+                days=week_days,
+            ),
+            month=WeatherMonth(
+                days=month_days,
+            ),
         )

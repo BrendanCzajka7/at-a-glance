@@ -34,5 +34,8 @@ class SpaceLaunch(Base):
     source_url = Column(Text, nullable=True)
 
     is_crewed = Column(Boolean, nullable=True)
+    flightclub_url = Column(Text, nullable=True)
 
     fetched_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+
+assert "flightclub_url" in SpaceLaunch.__table__.columns.keys()

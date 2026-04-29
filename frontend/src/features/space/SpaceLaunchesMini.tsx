@@ -19,26 +19,30 @@ export function SpaceLaunchesMini({ launches }: Props) {
     <div>
       <strong>Launches</strong>
 
-      {launches.map((launch) => (
-        <div key={`${launch.name}-${launch.net}`}>
-          <p>
-            {launch.source_url ? (
-              <a href={launch.source_url} target="_blank" rel="noreferrer">
-                {launch.name}
-              </a>
-            ) : (
-              launch.name
-            )}
-          </p>
+      {launches.map((launch) => {
+        const href = launch.webcast_url || launch.flightclub_url;
 
-          <small>
-            {formatTime(launch.net)}
-            {launch.provider_name ? ` · ${launch.provider_name}` : ""}
-            {launch.location_name ? ` · ${launch.location_name}` : ""}
-            {launch.status_name ? ` · ${launch.status_name}` : ""}
-          </small>
-        </div>
-      ))}
+        return (
+          <div key={`${launch.name}-${launch.net}`}>
+            <p>
+              {href ? (
+                <a href={href} target="_blank" rel="noreferrer">
+                  {launch.name}
+                </a>
+              ) : (
+                launch.name
+              )}
+            </p>
+
+            <small>
+              {formatTime(launch.net)}
+              {launch.provider_name ? ` · ${launch.provider_name}` : ""}
+              {launch.location_name ? ` · ${launch.location_name}` : ""}
+              {launch.status_name ? ` · ${launch.status_name}` : ""}
+            </small>
+          </div>
+        );
+      })}
     </div>
   );
 }

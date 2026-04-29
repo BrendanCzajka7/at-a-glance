@@ -146,6 +146,7 @@ export type SpaceLaunch = {
   image_url: string | null;
   webcast_url: string | null;
   source_url: string | null;
+  flightclub_url: string | null;
 
   is_crewed: boolean | null;
 };

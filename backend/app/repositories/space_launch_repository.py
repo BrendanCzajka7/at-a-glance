@@ -29,6 +29,7 @@ class SpaceLaunchRepository:
                 existing.location_name = launch.location_name
                 existing.image_url = launch.image_url
                 existing.webcast_url = launch.webcast_url
+                existing.flightclub_url = launch.flightclub_url
                 existing.source_url = launch.source_url
                 existing.is_crewed = launch.is_crewed
                 existing.fetched_at = datetime.utcnow()

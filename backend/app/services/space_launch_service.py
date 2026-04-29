@@ -62,6 +62,7 @@ class SpaceLaunchService:
                     if raw.get("vidURLs")
                     else None,
                     source_url=raw.get("url"),
+                    flightclub_url=raw.get("flightclub_url"),
                     is_crewed=raw.get("is_crewed"),
                 )
             )

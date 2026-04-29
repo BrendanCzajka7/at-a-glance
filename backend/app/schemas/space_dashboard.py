@@ -21,7 +21,7 @@ class SpaceLaunchCard(BaseModel):
     image_url: str | None = None
     webcast_url: str | None = None
     source_url: str | None = None
-
+    flightclub_url: str | None = None
     is_crewed: bool | None = None
 
 

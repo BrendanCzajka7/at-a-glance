@@ -27,5 +27,5 @@ class SpaceLaunchRead(BaseModel):
     source_url: str | None = None
 
     is_crewed: bool | None = None
-
+    flightclub_url: str | None = None
     fetched_at: datetime

@@ -44,3 +44,28 @@ export function weatherCodeLabel(code: number | null) {
       return "Unknown";
   }
 }
+
+export function windDirectionLabel(degrees: number | null) {
+  if (degrees === null) return "N/A";
+
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const index = Math.round(degrees / 45) % 8;
+
+  return directions[index];
+}
+
+export function dayNight(value: number | null) {
+  if (value === 1) return "Day";
+  if (value === 0) return "Night";
+  return "N/A";
+}
+
+export function cloudCoverLabel(cloudCover: number | null) {
+  if (cloudCover === null) return "N/A";
+
+  if (cloudCover <= 10) return "Sunny";
+  if (cloudCover <= 35) return "Mostly sunny";
+  if (cloudCover <= 65) return "Partly cloudy";
+  if (cloudCover <= 85) return "Mostly cloudy";
+  return "Cloudy";
+}

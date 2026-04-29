@@ -8,6 +8,8 @@ from app.models.nasa_neo import NasaNeoCloseApproach
 from app.models.nasa_epic import NasaEpicImage
 from app.models.music_artist import MusicArtist
 from app.models.music_release import MusicRelease
+from app.models.tmdb_watch_item import TmdbWatchItem
+from app.models.tmdb_movie_release import TmdbMovieRelease
 
 __all__ = [
     "Location",
@@ -18,4 +20,6 @@ __all__ = [
     "NasaEpicImage",
     "MusicArtist",
     "MusicRelease",
+    "TmdbWatchItem",
+    "TmdbMovieRelease",
 ]

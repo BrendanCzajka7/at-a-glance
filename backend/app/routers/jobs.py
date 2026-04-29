@@ -14,6 +14,8 @@ from app.schemas.nasa_epic import NasaEpicImageRead
 from app.schemas.nasa_neo import NasaNeoCloseApproachRead
 from app.pipelines.ingest_music_releases import MusicReleaseIngestPipeline
 from app.schemas.music import MusicReleaseRead
+from app.pipelines.ingest_tmdb_movies import TmdbMovieIngestPipeline
+from app.schemas.tmdb import TmdbMovieReleaseRead
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -59,3 +61,8 @@ async def ingest_nasa_epic(db: Session = Depends(get_db)):
 async def ingest_music_releases(db: Session = Depends(get_db)):
     pipeline = MusicReleaseIngestPipeline(db)
     return await pipeline.run_for_all_artists()
+
+@router.post("/ingest-tmdb-movies", response_model=list[TmdbMovieReleaseRead])
+async def ingest_tmdb_movies(db: Session = Depends(get_db)):
+    pipeline = TmdbMovieIngestPipeline(db)
+    return await pipeline.run_for_all_watch_items()

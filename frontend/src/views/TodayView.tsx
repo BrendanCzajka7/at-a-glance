@@ -6,6 +6,7 @@ import { WeatherAtGlance } from "../features/weather/WeatherAtGlance";
 import { WeatherTodaySummary } from "../features/weather/WeatherTodaySummary";
 import { WeatherUpcomingHours } from "../features/weather/WeatherUpcomingHours";
 import type { Dashboard } from "../types/dashboard";
+import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 
 type Props = {
   dashboard: Dashboard;
@@ -28,6 +29,7 @@ export function TodayView({ dashboard }: Props) {
           title="Music Releases Today"
           releases={dashboard.music.today}
         />
+        <TmdbMoviesMini movies={dashboard.tmdb.today} />
 
         <NasaApodSection nasa={dashboard.nasa} />
         <NasaEpicSection nasa={dashboard.nasa} />

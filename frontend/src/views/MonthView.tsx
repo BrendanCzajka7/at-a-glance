@@ -1,6 +1,7 @@
 import { MusicReleasesMini } from "../features/music/MusicReleasesMini";
 import { weatherCodeLabel } from "../features/weather/weatherFormat";
 import type { Dashboard, NasaNeo } from "../types/dashboard";
+import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 
 type Props = {
   dashboard: Dashboard;
@@ -25,6 +26,12 @@ function round(value: number | null) {
   if (value === null || value === undefined) return "N/A";
   return Math.round(value);
 }
+function moviesForDay(
+  movies: Dashboard["tmdb"]["month"],
+  dayKey: string
+) {
+  return movies.filter((movie) => movie.release_date === dayKey);
+}
 
 export function MonthView({ dashboard }: Props) {
   return (
@@ -43,6 +50,7 @@ export function MonthView({ dashboard }: Props) {
           const neos = neosForDay(dashboard.nasa.neos.month, key);
           const musicReleases = releasesForDay(dashboard.music.month, key);
           const date = new Date(day.forecast_for);
+          const movies = moviesForDay(dashboard.tmdb.month, key);
 
           return (
             <div
@@ -63,7 +71,7 @@ export function MonthView({ dashboard }: Props) {
               <small>{weatherCodeLabel(day.weather_code)}</small>
 
               {neos.length > 0 && <p>{neos.length} asteroid</p>}
-
+              {movies.length > 0 && <TmdbMoviesMini movies={movies} />}
               {musicReleases.length > 0 && (
                 <MusicReleasesMini releases={musicReleases} />
               )}

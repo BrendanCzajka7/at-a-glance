@@ -1,12 +1,11 @@
-# backend/app/schemas/dashboard.py
-
 from datetime import datetime
 
 from pydantic import BaseModel
 
-from app.schemas.nasa_dashboard import NasaSection
-from app.schemas.weather_dashboard import WeatherSection
 from app.schemas.music_dashboard import MusicSection
+from app.schemas.nasa_dashboard import NasaSection
+from app.schemas.tmdb_dashboard import TmdbSection
+from app.schemas.weather_dashboard import WeatherSection
 
 
 class DashboardRead(BaseModel):
@@ -16,3 +15,4 @@ class DashboardRead(BaseModel):
     weather: WeatherSection
     nasa: NasaSection
     music: MusicSection
+    tmdb: TmdbSection

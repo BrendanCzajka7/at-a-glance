@@ -8,7 +8,7 @@ from app.dashboard.nasa_section import NasaDashboardSection
 from app.dashboard.music_section import MusicDashboardSection
 from app.schemas.dashboard import DashboardRead
 from app.services.location_service import LocationService
-
+from app.dashboard.tmdb_section import TmdbDashboardSection
 
 class DashboardService:
     def __init__(self, db):
@@ -16,6 +16,7 @@ class DashboardService:
         self.weather_section = WeatherDashboardSection(db)
         self.nasa_section = NasaDashboardSection(db)
         self.music_section = MusicDashboardSection(db)
+        self.tmdb_section = TmdbDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -36,4 +37,5 @@ class DashboardService:
             ),
             nasa=self.nasa_section.build(start=start),
             music=self.music_section.build(start=start),
+            tmdb=self.tmdb_section.build(start=start),
         )

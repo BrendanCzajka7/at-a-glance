@@ -91,6 +91,23 @@ export type MusicSection = {
   month: MusicRelease[];
 };
 
+export type TmdbMovieRelease = {
+  tmdb_movie_id: number;
+  title: string;
+  overview: string | null;
+  poster_path: string | null;
+  release_date: string;
+  matched_kind: string;
+  matched_name: string;
+  source_url: string | null;
+};
+
+export type TmdbSection = {
+  today: TmdbMovieRelease[];
+  week: TmdbMovieRelease[];
+  month: TmdbMovieRelease[];
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -109,4 +126,5 @@ export type Dashboard = {
   };
   nasa: NasaSection;
   music: MusicSection;
+  tmdb: TmdbSection;
 };

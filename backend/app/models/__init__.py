@@ -13,6 +13,7 @@ from app.models.tmdb_movie_release import TmdbMovieRelease
 from app.models.app_event import AppEvent
 from app.models.ticketmaster_concert import TicketmasterConcert
 from app.models.space_launch import SpaceLaunch
+from app.models.usgs_earthquake import UsgsEarthquake
 
 __all__ = [
     "Location",
@@ -28,4 +29,5 @@ __all__ = [
     "AppEvent",
     "TicketmasterConcert",
     "SpaceLaunch",
+    "UsgsEarthquake",
 ]

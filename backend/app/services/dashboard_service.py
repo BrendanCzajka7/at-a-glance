@@ -11,6 +11,7 @@ from app.services.location_service import LocationService
 from app.dashboard.tmdb_section import TmdbDashboardSection
 from app.dashboard.ticketmaster_section import TicketmasterDashboardSection
 from app.dashboard.space_section import SpaceDashboardSection
+from app.dashboard.usgs_section import UsgsDashboardSection
 
 class DashboardService:
     def __init__(self, db):
@@ -21,6 +22,7 @@ class DashboardService:
         self.tmdb_section = TmdbDashboardSection(db)
         self.ticketmaster_section = TicketmasterDashboardSection(db)
         self.space_section = SpaceDashboardSection(db)
+        self.usgs_section = UsgsDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -29,9 +31,10 @@ class DashboardService:
         location_key: str,
     ) -> DashboardRead:
         location = self.location_service.get_required(location_key)
+        generated_at = now_for_timezone(location.timezone)
 
         return DashboardRead(
-            generated_at=now_for_timezone(location.timezone),
+            generated_at=generated_at,
             start=start,
             end=end,
             weather=self.weather_section.build(
@@ -47,4 +50,5 @@ class DashboardService:
                 location_key=location.key,
             ),
             space=self.space_section.build(start=start),
+            usgs=self.usgs_section.build(now=generated_at),
         )

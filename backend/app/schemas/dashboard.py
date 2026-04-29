@@ -8,7 +8,7 @@ from app.schemas.tmdb_dashboard import TmdbSection
 from app.schemas.weather_dashboard import WeatherSection
 from app.schemas.ticketmaster_dashboard import TicketmasterSection
 from app.schemas.space_dashboard import SpaceSection
-
+from app.schemas.usgs_dashboard import UsgsSection
 
 class DashboardRead(BaseModel):
     generated_at: datetime
@@ -20,3 +20,4 @@ class DashboardRead(BaseModel):
     tmdb: TmdbSection
     ticketmaster: TicketmasterSection
     space: SpaceSection
+    usgs: UsgsSection

@@ -31,6 +31,9 @@ from app.pipelines.ingest_ticketmaster_concerts import TicketmasterConcertIngest
 from app.pipelines.ingest_space_launches import SpaceLaunchIngestPipeline
 from app.schemas.space_launch import SpaceLaunchRead
 
+from app.pipelines.ingest_usgs_earthquakes import UsgsEarthquakeIngestPipeline
+from app.schemas.usgs import UsgsEarthquakeRead
+
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
 
@@ -193,5 +196,17 @@ async def ingest_space_launches(db: Session = Depends(get_db)):
         source="launch_library",
         event_type="ingest_space_launches_failed",
         message="Launch Library 2 space launch ingest failed",
+        action=pipeline.run(),
+    )
+
+@router.post("/ingest-usgs-earthquakes", response_model=list[UsgsEarthquakeRead])
+async def ingest_usgs_earthquakes(db: Session = Depends(get_db)):
+    pipeline = UsgsEarthquakeIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="usgs",
+        event_type="ingest_usgs_earthquakes_failed",
+        message="USGS earthquake ingest failed",
         action=pipeline.run(),
     )

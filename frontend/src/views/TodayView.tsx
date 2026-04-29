@@ -9,6 +9,7 @@ import type { Dashboard } from "../types/dashboard";
 import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
 import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
 import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
+import { UsgsEarthToday } from "../features/usgs/UsgsEarthToday";
 
 type Props = {
   dashboard: Dashboard;
@@ -26,6 +27,12 @@ export function TodayView({ dashboard }: Props) {
       <section style={{ flex: 1 }}>
         <h2>Today</h2>
         <WeatherTodaySummary weather={dashboard.weather} />
+        <UsgsEarthToday
+        largest={dashboard.usgs.largest_today}
+        mostSignificant={dashboard.usgs.most_significant_today}
+        tsunamiEvents={dashboard.usgs.tsunami_events_today}
+        alertEvents={dashboard.usgs.alert_events_today}
+      />
 
         <MusicReleasesSection
           title="Music Releases Today"

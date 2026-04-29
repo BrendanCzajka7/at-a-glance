@@ -1,3 +1,4 @@
+import { MusicReleasesMini } from "../features/music/MusicReleasesMini";
 import { weatherCodeLabel } from "../features/weather/weatherFormat";
 import type { Dashboard, NasaNeo } from "../types/dashboard";
 
@@ -11,6 +12,13 @@ function dateKey(value: string) {
 
 function neosForDay(neos: NasaNeo[], dayKey: string) {
   return neos.filter((neo) => neo.close_approach_date === dayKey);
+}
+
+function releasesForDay(
+  releases: Dashboard["music"]["month"],
+  dayKey: string
+) {
+  return releases.filter((release) => release.release_date === dayKey);
 }
 
 function round(value: number | null) {
@@ -33,6 +41,7 @@ export function MonthView({ dashboard }: Props) {
         {dashboard.weather.month.days.map((day) => {
           const key = dateKey(day.forecast_for);
           const neos = neosForDay(dashboard.nasa.neos.month, key);
+          const musicReleases = releasesForDay(dashboard.music.month, key);
           const date = new Date(day.forecast_for);
 
           return (
@@ -47,12 +56,17 @@ export function MonthView({ dashboard }: Props) {
               <strong>{date.getDate()}</strong>
 
               <p>
-                {round(day.temperature_max_f)}° / {round(day.temperature_min_f)}°
+                {round(day.temperature_max_f)}° /{" "}
+                {round(day.temperature_min_f)}°
               </p>
 
               <small>{weatherCodeLabel(day.weather_code)}</small>
 
               {neos.length > 0 && <p>{neos.length} asteroid</p>}
+
+              {musicReleases.length > 0 && (
+                <MusicReleasesMini releases={musicReleases} />
+              )}
             </div>
           );
         })}

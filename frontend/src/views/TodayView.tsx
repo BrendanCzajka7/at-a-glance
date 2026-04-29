@@ -1,3 +1,4 @@
+import { MusicReleasesSection } from "../features/music/MusicReleasesSection";
 import { NasaApodSection } from "../features/nasa/NasaApodSection";
 import { NasaEpicSection } from "../features/nasa/NasaEpicSection";
 import { NasaNeoToday } from "../features/nasa/NasaNeoToday";
@@ -22,6 +23,12 @@ export function TodayView({ dashboard }: Props) {
       <section style={{ flex: 1 }}>
         <h2>Today</h2>
         <WeatherTodaySummary weather={dashboard.weather} />
+
+        <MusicReleasesSection
+          title="Music Releases Today"
+          releases={dashboard.music.today}
+        />
+
         <NasaApodSection nasa={dashboard.nasa} />
         <NasaEpicSection nasa={dashboard.nasa} />
         <NasaNeoToday neos={dashboard.nasa.neos.today} />

@@ -76,6 +76,21 @@ export type NasaSection = {
     month: NasaNeo[];
   };
 };
+
+export type MusicRelease = {
+  artist_name: string;
+  title: string;
+  release_date: string;
+  release_type: string | null;
+  source_url: string | null;
+};
+
+export type MusicSection = {
+  today: MusicRelease[];
+  week: MusicRelease[];
+  month: MusicRelease[];
+};
+
 export type Dashboard = {
   generated_at: string;
   weather: {
@@ -93,4 +108,5 @@ export type Dashboard = {
     };
   };
   nasa: NasaSection;
+  music: MusicSection;
 };

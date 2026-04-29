@@ -1,3 +1,4 @@
+import { MusicReleasesMini } from "../features/music/MusicReleasesMini";
 import { NasaNeoMini } from "../features/nasa/NasaNeoMini";
 import { weatherCodeLabel } from "../features/weather/weatherFormat";
 import type { Dashboard, NasaNeo, WeatherDay } from "../types/dashboard";
@@ -22,6 +23,13 @@ function neosForDay(neos: NasaNeo[], dayKey: string) {
   return neos.filter((neo) => neo.close_approach_date === dayKey);
 }
 
+function releasesForDay(
+  releases: Dashboard["music"]["week"],
+  dayKey: string
+) {
+  return releases.filter((release) => release.release_date === dayKey);
+}
+
 function round(value: number | null) {
   if (value === null || value === undefined) return "N/A";
   return Math.round(value);
@@ -30,9 +38,11 @@ function round(value: number | null) {
 function WeekDayBox({
   weatherDay,
   neos,
+  musicReleases,
 }: {
   weatherDay: WeatherDay;
   neos: NasaNeo[];
+  musicReleases: Dashboard["music"]["week"];
 }) {
   return (
     <section
@@ -55,6 +65,8 @@ function WeekDayBox({
         <p>UV: {weatherDay.uv_index ?? "N/A"}</p>
       </div>
 
+      <MusicReleasesMini releases={musicReleases} />
+
       <NasaNeoMini neos={neos} />
     </section>
   );
@@ -74,6 +86,7 @@ export function WeekView({ dashboard }: Props) {
               key={day.forecast_for}
               weatherDay={day}
               neos={neosForDay(dashboard.nasa.neos.week, key)}
+              musicReleases={releasesForDay(dashboard.music.week, key)}
             />
           );
         })}

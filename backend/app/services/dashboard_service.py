@@ -1,19 +1,21 @@
-from datetime import datetime
+# backend/app/services/dashboard_service.py
 
-from sqlalchemy.orm import Session
+from datetime import datetime
 
 from app.core.time import now_for_timezone
 from app.dashboard.weather_section import WeatherDashboardSection
+from app.dashboard.nasa_section import NasaDashboardSection
+from app.dashboard.music_section import MusicDashboardSection
 from app.schemas.dashboard import DashboardRead
 from app.services.location_service import LocationService
-from app.dashboard.nasa_section import NasaDashboardSection
 
 
 class DashboardService:
-    def __init__(self, db: Session):
+    def __init__(self, db):
         self.location_service = LocationService(db)
         self.weather_section = WeatherDashboardSection(db)
         self.nasa_section = NasaDashboardSection(db)
+        self.music_section = MusicDashboardSection(db)
 
     def get_dashboard(
         self,
@@ -33,4 +35,5 @@ class DashboardService:
                 location_key=location.key,
             ),
             nasa=self.nasa_section.build(start=start),
+            music=self.music_section.build(start=start),
         )

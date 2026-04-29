@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { fetchDashboard, fetchLocations } from "./api/dashboard";
+import { AppToolbar } from "./components/AppToolbar";
 import { LocationSelect } from "./components/LocationSelect";
 import { ViewTabs } from "./components/ViewTabs";
 import type { Dashboard, Location } from "./types/dashboard";
@@ -23,16 +24,16 @@ export default function App() {
       .catch((err) => setError(err.message));
   }, []);
 
-  useEffect(() => {
-    async function loadDashboard() {
-      try {
-        setError("");
-        setDashboard(await fetchDashboard(selectedLocationKey));
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Unknown error");
-      }
+  async function loadDashboard() {
+    try {
+      setError("");
+      setDashboard(await fetchDashboard(selectedLocationKey));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Unknown error");
     }
+  }
 
+  useEffect(() => {
     loadDashboard();
     const id = setInterval(loadDashboard, 60_000);
 
@@ -42,6 +43,8 @@ export default function App() {
   return (
     <main>
       <h1>At a Glance</h1>
+
+      <AppToolbar onChanged={loadDashboard} />
 
       <LocationSelect
         locations={locations}

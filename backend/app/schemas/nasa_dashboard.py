@@ -15,22 +15,36 @@ class NasaApodCard(BaseModel):
     copyright: str | None = None
 
 
-class NasaSpaceWeatherCard(BaseModel):
+class NasaEpicCard(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
-    message_id: str
-    message_type: str | None = None
-    message_issue_time: datetime
-    title: str
-    summary: str
-    message_url: str | None = None
+    identifier: str
+    caption: str | None = None
+    image_date: datetime
+    image_url: str
 
 
-class NasaSpaceWeatherSection(BaseModel):
-    today: list[NasaSpaceWeatherCard]
-    week: list[NasaSpaceWeatherCard]
+class NasaNeoCard(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    neo_reference_id: str
+    name: str
+    nasa_jpl_url: str | None = None
+    close_approach_date: date
+    close_approach_time: str | None = None
+    estimated_diameter_max_m: float | None = None
+    miss_distance_lunar: float | None = None
+    relative_velocity_kph: float | None = None
+    is_potentially_hazardous: bool
+
+
+class NasaNeoSection(BaseModel):
+    today: list[NasaNeoCard]
+    week: list[NasaNeoCard]
+    month: list[NasaNeoCard]
 
 
 class NasaSection(BaseModel):
     apod: NasaApodCard | None = None
-    space_weather: NasaSpaceWeatherSection
+    epic: NasaEpicCard | None = None
+    neos: NasaNeoSection

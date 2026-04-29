@@ -8,6 +8,10 @@ from app.pipelines.ingest_nasa_apod import NasaApodIngestPipeline
 from app.schemas.nasa_apod import NasaApodRead
 from app.pipelines.ingest_nasa_space_weather import NasaSpaceWeatherIngestPipeline
 from app.schemas.nasa_space_weather import NasaSpaceWeatherNotificationRead
+from app.pipelines.ingest_nasa_epic import NasaEpicIngestPipeline
+from app.pipelines.ingest_nasa_neos import NasaNeoIngestPipeline
+from app.schemas.nasa_epic import NasaEpicImageRead
+from app.schemas.nasa_neo import NasaNeoCloseApproachRead
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -36,4 +40,15 @@ async def ingest_nasa_apod(db: Session = Depends(get_db)):
 )
 async def ingest_nasa_space_weather(db: Session = Depends(get_db)):
     pipeline = NasaSpaceWeatherIngestPipeline(db)
+    return await pipeline.run()
+
+@router.post("/ingest-nasa-neos", response_model=list[NasaNeoCloseApproachRead])
+async def ingest_nasa_neos(db: Session = Depends(get_db)):
+    pipeline = NasaNeoIngestPipeline(db)
+    return await pipeline.run()
+
+
+@router.post("/ingest-nasa-epic", response_model=NasaEpicImageRead | None)
+async def ingest_nasa_epic(db: Session = Depends(get_db)):
+    pipeline = NasaEpicIngestPipeline(db)
     return await pipeline.run()

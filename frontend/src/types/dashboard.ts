@@ -48,23 +48,34 @@ export type NasaApod = {
   copyright: string | null;
 };
 
-export type NasaSpaceWeatherCard = {
-  message_id: string;
-  message_type: string | null;
-  message_issue_time: string;
-  title: string;
-  summary: string;
-  message_url: string | null;
+export type NasaEpic = {
+  identifier: string;
+  caption: string | null;
+  image_date: string;
+  image_url: string;
+};
+
+export type NasaNeo = {
+  neo_reference_id: string;
+  name: string;
+  nasa_jpl_url: string | null;
+  close_approach_date: string;
+  close_approach_time: string | null;
+  estimated_diameter_max_m: number | null;
+  miss_distance_lunar: number | null;
+  relative_velocity_kph: number | null;
+  is_potentially_hazardous: boolean;
 };
 
 export type NasaSection = {
   apod: NasaApod | null;
-  space_weather: {
-    today: NasaSpaceWeatherCard[];
-    week: NasaSpaceWeatherCard[];
+  epic: NasaEpic | null;
+  neos: {
+    today: NasaNeo[];
+    week: NasaNeo[];
+    month: NasaNeo[];
   };
 };
-
 export type Dashboard = {
   generated_at: string;
   weather: {

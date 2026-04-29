@@ -1,11 +1,6 @@
-import { NasaSpaceWeatherWeek } from "../features/nasa/NasaSpaceWeatherWeek";
-import { WeatherWeekSection } from "../features/weather/WeatherWeekSection";
-import type {
-  Dashboard,
-  NasaSpaceWeatherCard,
-  WeatherDay,
-} from "../types/dashboard";
+import { NasaNeoMini } from "../features/nasa/NasaNeoMini";
 import { weatherCodeLabel } from "../features/weather/weatherFormat";
+import type { Dashboard, NasaNeo, WeatherDay } from "../types/dashboard";
 
 type Props = {
   dashboard: Dashboard;
@@ -23,26 +18,26 @@ function formatWeekday(value: string) {
   });
 }
 
-function noticesForDay(
-  notices: NasaSpaceWeatherCard[],
-  dayKey: string
-) {
-  return notices.filter(
-    (notice) => dateKey(notice.message_issue_time) === dayKey
-  );
+function neosForDay(neos: NasaNeo[], dayKey: string) {
+  return neos.filter((neo) => neo.close_approach_date === dayKey);
+}
+
+function round(value: number | null) {
+  if (value === null || value === undefined) return "N/A";
+  return Math.round(value);
 }
 
 function WeekDayBox({
   weatherDay,
-  nasaNotices,
+  neos,
 }: {
   weatherDay: WeatherDay;
-  nasaNotices: NasaSpaceWeatherCard[];
+  neos: NasaNeo[];
 }) {
   return (
     <section
       style={{
-        minWidth: 180,
+        minWidth: 190,
         border: "1px solid #ccc",
         padding: 12,
       }}
@@ -53,45 +48,32 @@ function WeekDayBox({
         <strong>Weather</strong>
         <p>{weatherCodeLabel(weatherDay.weather_code)}</p>
         <p>
-          {Math.round(weatherDay.temperature_max_f ?? 0)}° /{" "}
-          {Math.round(weatherDay.temperature_min_f ?? 0)}°
+          {round(weatherDay.temperature_max_f)}° /{" "}
+          {round(weatherDay.temperature_min_f)}°
         </p>
         <p>Rain: {weatherDay.precipitation_probability ?? "N/A"}%</p>
         <p>UV: {weatherDay.uv_index ?? "N/A"}</p>
       </div>
 
-      <div>
-        <strong>NASA</strong>
-
-        {nasaNotices.length === 0 && <p>No notices</p>}
-
-        {nasaNotices.map((notice) => (
-          <p key={notice.message_id}>
-            {notice.title} {notice.message_type ? `(${notice.message_type})` : ""}
-          </p>
-        ))}
-      </div>
+      <NasaNeoMini neos={neos} />
     </section>
   );
 }
 
 export function WeekView({ dashboard }: Props) {
-  const weekDays = dashboard.weather.week.days;
-  const nasaWeek = dashboard.nasa.space_weather.week;
-
   return (
     <section>
       <h2>Week</h2>
 
       <div style={{ display: "flex", gap: 12, overflowX: "auto" }}>
-        {weekDays.map((day) => {
+        {dashboard.weather.week.days.map((day) => {
           const key = dateKey(day.forecast_for);
 
           return (
             <WeekDayBox
               key={day.forecast_for}
               weatherDay={day}
-              nasaNotices={noticesForDay(nasaWeek, key)}
+              neos={neosForDay(dashboard.nasa.neos.week, key)}
             />
           );
         })}

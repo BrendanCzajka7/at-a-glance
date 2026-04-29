@@ -16,6 +16,10 @@ from app.routers.jobs import router as jobs_router
 from app.routers.weather_forecast import router as weather_forecast_router
 from app.models.location import Location
 from app.routers.locations import router as locations_router
+from app.models.nasa_neo import NasaNeoCloseApproach
+from app.models.nasa_epic import NasaEpicImage
+from app.routers.nasa_epic import router as nasa_epic_router
+from app.routers.nasa_neos import router as nasa_neos_router
 
 app = FastAPI(title="At A Glance API")
 
@@ -37,7 +41,8 @@ app.include_router(dashboard_router)
 app.include_router(locations_router)
 app.include_router(nasa_router)
 app.include_router(nasa_space_weather_router)
-
+app.include_router(nasa_epic_router)
+app.include_router(nasa_neos_router)
 
 @app.get("/api/health")
 def health():

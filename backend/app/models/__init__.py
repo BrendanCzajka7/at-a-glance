@@ -10,6 +10,7 @@ from app.models.music_artist import MusicArtist
 from app.models.music_release import MusicRelease
 from app.models.tmdb_watch_item import TmdbWatchItem
 from app.models.tmdb_movie_release import TmdbMovieRelease
+from app.models.app_event import AppEvent
 
 __all__ = [
     "Location",
@@ -22,4 +23,5 @@ __all__ = [
     "MusicRelease",
     "TmdbWatchItem",
     "TmdbMovieRelease",
+    "AppEvent",
 ]

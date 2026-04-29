@@ -15,3 +15,21 @@ class NasaClient:
             response = await client.get(self.BASE_URL, params=params)
             response.raise_for_status()
             return response.json()
+
+    async def fetch_space_weather_notifications(
+        self,
+        start_date: str,
+        end_date: str,
+    ) -> list[dict]:
+        url = "https://api.nasa.gov/DONKI/notifications"
+
+        params = {
+            "startDate": start_date,
+            "endDate": end_date,
+            "api_key": NASA_API_KEY,
+        }
+
+        async with httpx.AsyncClient(timeout=20) as client:
+            response = await client.get(url, params=params)
+            response.raise_for_status()
+            return response.json()

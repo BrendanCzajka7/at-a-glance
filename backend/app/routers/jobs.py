@@ -6,6 +6,8 @@ from app.pipelines.ingest_weather_forecast import WeatherForecastIngestPipeline
 from app.schemas.weather_forecast import WeatherForecastRead
 from app.pipelines.ingest_nasa_apod import NasaApodIngestPipeline
 from app.schemas.nasa_apod import NasaApodRead
+from app.pipelines.ingest_nasa_space_weather import NasaSpaceWeatherIngestPipeline
+from app.schemas.nasa_space_weather import NasaSpaceWeatherNotificationRead
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -26,4 +28,12 @@ async def ingest_weather_forecast_all(db: Session = Depends(get_db)):
 @router.post("/ingest-nasa-apod", response_model=NasaApodRead)
 async def ingest_nasa_apod(db: Session = Depends(get_db)):
     pipeline = NasaApodIngestPipeline(db)
+    return await pipeline.run()
+
+@router.post(
+    "/ingest-nasa-space-weather",
+    response_model=list[NasaSpaceWeatherNotificationRead],
+)
+async def ingest_nasa_space_weather(db: Session = Depends(get_db)):
+    pipeline = NasaSpaceWeatherIngestPipeline(db)
     return await pipeline.run()

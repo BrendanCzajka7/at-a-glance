@@ -32,5 +32,5 @@ class DashboardService:
                 end=end,
                 location_key=location.key,
             ),
-            nasa=self.nasa_section.build(),
+            nasa=self.nasa_section.build(start=start),
         )

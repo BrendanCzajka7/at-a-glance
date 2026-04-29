@@ -48,8 +48,21 @@ export type NasaApod = {
   copyright: string | null;
 };
 
+export type NasaSpaceWeatherCard = {
+  message_id: string;
+  message_type: string | null;
+  message_issue_time: string;
+  title: string;
+  summary: string;
+  message_url: string | null;
+};
+
 export type NasaSection = {
   apod: NasaApod | null;
+  space_weather: {
+    today: NasaSpaceWeatherCard[];
+    week: NasaSpaceWeatherCard[];
+  };
 };
 
 export type Dashboard = {

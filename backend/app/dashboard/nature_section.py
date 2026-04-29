@@ -9,11 +9,11 @@ class NatureDashboardSection:
         self.nature_service = NaturePhotoService(db)
 
     def build(self, now: datetime) -> NatureSection:
-        photo = self.nature_service.get_for_date(now.date())
-
-        if not photo:
-            photo = self.nature_service.get_latest()
+        photos = self.nature_service.list_for_date(now.date())
 
         return NatureSection(
-            today=NaturePhotoCard.model_validate(photo) if photo else None,
+            today=[
+                NaturePhotoCard.model_validate(photo)
+                for photo in photos
+            ],
         )

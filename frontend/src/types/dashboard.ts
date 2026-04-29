@@ -269,7 +269,7 @@ export type NaturePhoto = {
 };
 
 export type NatureSection = {
-  today: NaturePhoto | null;
+  today: NaturePhoto[];
 };
 
 export type Dashboard = {

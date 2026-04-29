@@ -7,15 +7,17 @@ class NaturePhotoRepository:
     def __init__(self, db):
         self.db = db
 
-    def upsert_for_date(self, row: NaturePhoto) -> NaturePhoto:
+    def upsert_for_date_and_theme(self, row: NaturePhoto) -> NaturePhoto:
         existing = (
             self.db.query(NaturePhoto)
-            .filter(NaturePhoto.photo_date == row.photo_date)
+            .filter(
+                NaturePhoto.photo_date == row.photo_date,
+                NaturePhoto.theme == row.theme,
+            )
             .first()
         )
 
         if existing:
-            existing.theme = row.theme
             existing.pexels_photo_id = row.pexels_photo_id
             existing.photographer = row.photographer
             existing.photographer_url = row.photographer_url
@@ -34,16 +36,24 @@ class NaturePhotoRepository:
         self.db.refresh(row)
         return row
 
-    def get_for_date(self, photo_date: date) -> NaturePhoto | None:
+    def list_for_date(self, photo_date: date) -> list[NaturePhoto]:
         return (
             self.db.query(NaturePhoto)
             .filter(NaturePhoto.photo_date == photo_date)
-            .first()
+            .order_by(NaturePhoto.theme.asc())
+            .all()
         )
 
-    def get_latest(self) -> NaturePhoto | None:
+    def get_for_date_and_theme(
+        self,
+        photo_date: date,
+        theme: str,
+    ) -> NaturePhoto | None:
         return (
             self.db.query(NaturePhoto)
-            .order_by(NaturePhoto.photo_date.desc())
+            .filter(
+                NaturePhoto.photo_date == photo_date,
+                NaturePhoto.theme == theme,
+            )
             .first()
         )

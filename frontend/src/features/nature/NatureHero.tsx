@@ -1,20 +1,50 @@
+import { useMemo, useState } from "react";
+
 import type { NaturePhoto } from "../../types/dashboard";
 
 type Props = {
-  photo: NaturePhoto | null;
+  photos: NaturePhoto[];
 };
 
-export function NatureHero({ photo }: Props) {
-  if (!photo) return null;
+export function NatureHero({ photos }: Props) {
+  const [selectedTheme, setSelectedTheme] = useState("");
+
+  const selectedPhoto = useMemo(() => {
+    if (photos.length === 0) return null;
+
+    if (!selectedTheme) return photos[0];
+
+    return photos.find((photo) => photo.theme === selectedTheme) ?? photos[0];
+  }, [photos, selectedTheme]);
+
+  if (photos.length === 0 || !selectedPhoto) {
+    return (
+      <section>
+        <h3>Today on Earth</h3>
+        <p>No nature photo ingested yet.</p>
+      </section>
+    );
+  }
 
   return (
     <section style={{ marginBottom: 16 }}>
-      <h2>Today on Earth</h2>
+      <h3>Today on Earth</h3>
 
-      <a href={photo.pexels_url ?? photo.image_url} target="_blank" rel="noreferrer">
+      <select
+        value={selectedPhoto.theme}
+        onChange={(e) => setSelectedTheme(e.target.value)}
+      >
+        {photos.map((photo) => (
+          <option key={photo.theme} value={photo.theme}>
+            {photo.theme}
+          </option>
+        ))}
+      </select>
+
+      <a href={selectedPhoto.pexels_url ?? selectedPhoto.image_url} target="_blank" rel="noreferrer">
         <img
-          src={photo.image_url}
-          alt={photo.alt ?? photo.theme}
+          src={selectedPhoto.image_url}
+          alt={selectedPhoto.alt ?? selectedPhoto.theme}
           style={{
             width: "100%",
             maxHeight: 320,
@@ -25,18 +55,18 @@ export function NatureHero({ photo }: Props) {
       </a>
 
       <p>
-        <strong>{photo.theme}</strong>
+        <strong>{selectedPhoto.theme}</strong>
       </p>
 
-      {photo.photographer && (
+      {selectedPhoto.photographer && (
         <p>
           Photo by{" "}
-          {photo.photographer_url ? (
-            <a href={photo.photographer_url} target="_blank" rel="noreferrer">
-              {photo.photographer}
+          {selectedPhoto.photographer_url ? (
+            <a href={selectedPhoto.photographer_url} target="_blank" rel="noreferrer">
+              {selectedPhoto.photographer}
             </a>
           ) : (
-            photo.photographer
+            selectedPhoto.photographer
           )}{" "}
           on Pexels
         </p>

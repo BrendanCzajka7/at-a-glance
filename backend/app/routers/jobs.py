@@ -264,21 +264,9 @@ async def ingest_ocean_conditions(
     )
 
 
-@router.post("/ingest-ocean-conditions-all")
-async def ingest_ocean_conditions_all(db: Session = Depends(get_db)):
-    pipeline = OceanConditionsIngestPipeline(db)
-
-    return await run_logged_pipeline(
-        db=db,
-        source="ndbc",
-        event_type="ingest_ocean_conditions_all_failed",
-        message="NDBC ocean conditions ingest failed for all active locations",
-        action=pipeline.run_for_all_active_locations(),
-    )
-
 @router.post("/ingest-nature-photo", response_model=NaturePhotoRead | None)
 async def ingest_nature_photo(
-    theme: str | None = Query(default=None),
+    theme: str = Query(...),
     db: Session = Depends(get_db),
 ):
     pipeline = NaturePhotoIngestPipeline(db)
@@ -287,6 +275,19 @@ async def ingest_nature_photo(
         db=db,
         source="pexels",
         event_type="ingest_nature_photo_failed",
-        message="Pexels nature photo ingest failed",
+        message=f"Pexels nature photo ingest failed for theme={theme}",
         action=pipeline.run_for_today(theme=theme),
+    )
+
+
+@router.post("/ingest-nature-photos", response_model=list[NaturePhotoRead])
+async def ingest_nature_photos(db: Session = Depends(get_db)):
+    pipeline = NaturePhotoIngestPipeline(db)
+
+    return await run_logged_pipeline(
+        db=db,
+        source="pexels",
+        event_type="ingest_nature_photos_failed",
+        message="Pexels nature photo ingest failed for all themes",
+        action=pipeline.run_all_for_today(),
     )

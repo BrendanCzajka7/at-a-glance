@@ -18,7 +18,7 @@ class NaturePhotoService:
         if not image_url:
             raise ValueError("Pexels photo is missing image_url")
 
-        return self.repo.upsert_for_date(
+        return self.repo.upsert_for_date_and_theme(
             NaturePhoto(
                 photo_date=photo_date,
                 theme=raw["theme"],
@@ -32,8 +32,15 @@ class NaturePhotoService:
             )
         )
 
-    def get_for_date(self, photo_date: date) -> NaturePhoto | None:
-        return self.repo.get_for_date(photo_date=photo_date)
+    def list_for_date(self, photo_date: date) -> list[NaturePhoto]:
+        return self.repo.list_for_date(photo_date=photo_date)
 
-    def get_latest(self) -> NaturePhoto | None:
-        return self.repo.get_latest()
+    def get_for_date_and_theme(
+        self,
+        photo_date: date,
+        theme: str,
+    ) -> NaturePhoto | None:
+        return self.repo.get_for_date_and_theme(
+            photo_date=photo_date,
+            theme=theme,
+        )

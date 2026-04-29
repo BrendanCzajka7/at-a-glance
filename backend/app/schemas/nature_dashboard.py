@@ -20,4 +20,4 @@ class NaturePhotoCard(BaseModel):
 
 
 class NatureSection(BaseModel):
-    today: NaturePhotoCard | None = None
+    today: list[NaturePhotoCard]

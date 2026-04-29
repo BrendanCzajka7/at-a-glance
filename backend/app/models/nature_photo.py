@@ -9,14 +9,14 @@ class NaturePhoto(Base):
     __tablename__ = "nature_photos"
 
     __table_args__ = (
-        UniqueConstraint("photo_date", name="uq_nature_photo_date"),
+        UniqueConstraint("photo_date", "theme", name="uq_nature_photo_date_theme"),
     )
 
     id = Column(Integer, primary_key=True)
 
     photo_date = Column(Date, nullable=False)
-
     theme = Column(String, nullable=False)
+
     pexels_photo_id = Column(Integer, nullable=True)
 
     photographer = Column(String, nullable=True)

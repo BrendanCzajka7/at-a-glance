@@ -17,7 +17,6 @@ import {
   type TmdbWatchItem,
 } from "../api/tmdb";
 import { RecentErrorsPanel } from "./RecentErrorsPanel";
-import { NatureThemePicker } from "./NatureThemePicker";
 
 type Props = {
   onChanged?: () => void;
@@ -208,7 +207,6 @@ export function AppToolbar({ onChanged }: Props) {
     >
       <h2>Tools</h2>
       <RecentErrorsPanel />
-      <NatureThemePicker onChanged={onChanged} />
 
       <button type="button" onClick={handleShowCurrent} disabled={isBusy}>
         {showCurrent ? "Hide Current Items" : "Show Current Items"}

@@ -45,7 +45,7 @@ export function PictureOfDayCard({ nature, nasa }: Props) {
   const epic = nasa.epic;
 
   return (
-    <div>
+     <div className="picture-card">
       <p className="card-eyebrow">Picture of the Day</p>
       <h2>Nature, space, and Earth</h2>
 

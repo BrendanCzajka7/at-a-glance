@@ -1,11 +1,19 @@
+/* =========================================================
+   App shell
+   ========================================================= */
+
 .app-page {
-  min-height: 100dvh;
-  padding: clamp(16px, 3vw, 40px);
+  height: 100dvh;
+  overflow: hidden;
+  padding: clamp(12px, 2.4vw, 32px);
 }
 
 .app-shell {
   width: min(1380px, 100%);
+  height: 100%;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--glass-border);
   border-radius: var(--radius-xl);
   background: var(--glass-bg);
@@ -16,7 +24,8 @@
 }
 
 .app-shell__top {
-  padding: clamp(20px, 3vw, 34px);
+  flex: 0 0 auto;
+  padding: clamp(16px, 2.2vw, 30px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.11);
 }
 
@@ -25,7 +34,6 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-5);
-  margin-bottom: var(--space-5);
 }
 
 .app-shell__title-block {
@@ -61,27 +69,15 @@
 }
 
 .app-shell__content {
-  padding: clamp(18px, 3vw, 34px);
+  flex: 1;
+  min-height: 0;
+  padding: clamp(14px, 2.2vw, 28px);
+  overflow: auto;
 }
 
-.app-shell__admin {
-  margin-top: var(--space-4);
-}
-
-.app-shell__admin summary {
-  width: fit-content;
-  padding: 9px 14px;
-  border: 1px solid var(--glass-border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-main);
-  cursor: pointer;
-  user-select: none;
-}
-
-.app-shell__admin-body {
-  margin-top: var(--space-3);
-}
+/* =========================================================
+   Basic UI
+   ========================================================= */
 
 .status-text {
   padding: 14px 16px;
@@ -133,78 +129,6 @@ section {
   min-width: 0;
 }
 
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
-  gap: var(--space-4);
-  align-items: stretch;
-}
-
-.dash-card {
-  grid-column: span 4;
-  min-width: 0;
-  padding: clamp(16px, 2vw, 22px);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255, 255, 255, 0.13),
-      rgba(255, 255, 255, 0.055)
-    );
-  box-shadow: var(--shadow-md);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-}
-
-.dash-card--hero {
-  grid-column: span 5;
-}
-
-.dash-card--wide {
-  grid-column: span 7;
-}
-
-.dash-card--compact {
-  grid-column: span 3;
-}
-
-.dash-card h2,
-.dash-card h3 {
-  margin-bottom: 12px;
-  letter-spacing: -0.03em;
-}
-
-.dash-card p {
-  margin: 8px 0;
-}
-
-.dash-card img {
-  max-width: 100%;
-}
-
-.dash-card svg {
-  vertical-align: -2px;
-  margin-right: 4px;
-}
-
-.today-stack {
-  display: grid;
-  gap: var(--space-4);
-}
-
-.today-primary {
-  grid-column: span 5;
-}
-
-.today-secondary {
-  grid-column: span 7;
-}
-
-.today-full {
-  grid-column: 1 / -1;
-}
-
 .card-eyebrow {
   margin: 0 0 8px;
   color: var(--text-soft);
@@ -212,85 +136,6 @@ section {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.today-weather-card {
-  grid-column: span 7;
-}
-
-.today-earth-card {
-  grid-column: span 5;
-}
-
-.today-entertainment-card {
-  grid-column: span 5;
-}
-
-.today-picture-card {
-  grid-column: span 7;
-}
-
-.weather-snapshot-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-4);
-}
-
-.weather-temp {
-  margin: 0;
-  font-size: clamp(4rem, 9vw, 7rem);
-  line-height: 0.85;
-  letter-spacing: -0.08em;
-}
-
-.weather-location {
-  margin-top: 10px;
-  color: var(--text-muted);
-}
-
-.weather-summary-pill {
-  padding: 8px 13px;
-  border: 1px solid var(--glass-border);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-main);
-  white-space: nowrap;
-}
-
-.metric-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-3);
-  margin: var(--space-4) 0;
-}
-
-.metric-item {
-  min-width: 0;
-  padding: 12px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.metric-item span {
-  display: block;
-  margin-top: 6px;
-  font-size: 1.05rem;
-  font-weight: 700;
-}
-
-.metric-item small {
-  display: block;
-  margin-top: 2px;
-}
-
-.weather-ocean-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
-  padding-top: var(--space-4);
-  border-top: 1px solid rgba(255, 255, 255, 0.11);
 }
 
 .mini-label {
@@ -302,15 +147,210 @@ section {
   text-transform: uppercase;
 }
 
+/* =========================================================
+   Dashboard cards and grid
+   ========================================================= */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: var(--space-4);
+  align-items: stretch;
+}
+
+.dash-card {
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(12px, 1.5vw, 20px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.055)
+    );
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  overflow: hidden;
+}
+
+.dash-card h2,
+.dash-card h3 {
+  margin-bottom: 10px;
+  letter-spacing: -0.03em;
+}
+
+.dash-card p {
+  margin: 5px 0;
+}
+
+.dash-card img {
+  max-width: 100%;
+}
+
+.dash-card svg {
+  vertical-align: -2px;
+  margin-right: 4px;
+}
+
+/* =========================================================
+   Today fixed dashboard
+   ========================================================= */
+
+.app-page {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-shell {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.app-shell__top {
+  flex: 0 0 auto;
+}
+
+.app-shell__content {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.today-fit-grid {
+  height: 100%;
+  overflow: hidden;
+  grid-template-rows: minmax(0, 1.12fr) minmax(0, 0.88fr);
+}
+
+.today-weather-card {
+  grid-column: span 7;
+  grid-row: 1;
+}
+
+.today-earth-card {
+  grid-column: span 5;
+  grid-row: 1;
+}
+
+.today-picture-card {
+  grid-column: span 7;
+  grid-row: 2;
+}
+
+.today-entertainment-card {
+  grid-column: span 5;
+  grid-row: 2;
+}
+
+.today-fit-grid h2 {
+  font-size: clamp(1.2rem, 1.65vw, 1.65rem);
+}
+
+.today-fit-grid h3 {
+  font-size: clamp(0.95rem, 1.15vw, 1.1rem);
+}
+
+.card-eyebrow {
+  margin: 0 0 8px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.mini-label {
+  margin: 0 0 8px;
+  color: var(--text-soft);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* =========================================================
+   Weather Today
+   ========================================================= */
+
+.weather-snapshot-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.weather-temp {
+  margin: 0;
+  font-size: clamp(3rem, 5.5vw, 5.25rem);
+  line-height: 0.85;
+  letter-spacing: -0.08em;
+}
+
+.weather-location {
+  margin-top: 8px;
+  color: var(--text-muted);
+}
+
+.weather-summary-pill {
+  max-width: 180px;
+  padding: 7px 11px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+}
+
+.metric-item {
+  min-width: 0;
+  padding: 9px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.metric-item span {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.96rem;
+  font-weight: 700;
+}
+
+.metric-item small {
+  display: block;
+  margin-top: 2px;
+}
+
+.weather-ocean-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px solid rgba(255, 255, 255, 0.11);
+}
+
 .weather-hours-strip {
   display: grid;
   grid-template-columns: repeat(5, minmax(72px, 1fr));
   gap: var(--space-2);
-  margin: var(--space-4) 0;
+  margin: var(--space-3) 0 0;
 }
 
 .weather-hour-pill {
-  padding: 10px;
+  padding: 8px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.075);
   text-align: center;
@@ -323,27 +363,218 @@ section {
 }
 
 .weather-hour-pill span {
-  margin: 5px 0;
-  font-size: 1.2rem;
+  margin: 4px 0;
+  font-size: 1.08rem;
   font-weight: 800;
 }
+
+/* =========================================================
+   Earth + Space
+   ========================================================= */
 
 .split-card-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-4);
+  gap: var(--space-3);
+  height: calc(100% - 54px);
+  overflow: hidden;
 }
 
 .split-card-grid > div {
   min-width: 0;
-  padding: 12px;
+  min-height: 0;
+  padding: 10px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
 }
 
 .split-card-grid h3 {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
+
+/* =========================================================
+   Picture of the Day
+   ========================================================= */
+
+.picture-card {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.picture-grid {
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.picture-panel {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: var(--space-2);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+}
+
+.picture-panel__header {
+  min-height: 40px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.picture-panel h3 {
+  margin: 0 0 3px;
+}
+
+.picture-panel > a {
+  min-height: 0;
+  display: block;
+}
+
+.picture-image {
+  width: 100%;
+  height: 100%;
+  min-height: 95px;
+  object-fit: cover;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.picture-placeholder {
+  height: 100%;
+  min-height: 95px;
+  display: grid;
+  place-items: center;
+  padding: var(--space-3);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.picture-title {
+  margin: 0;
+  color: var(--text-main);
+  font-weight: 700;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.picture-credit {
+  margin: 0;
+  font-size: 0.82rem;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+
+.caption-details {
+  min-height: 24px;
+  margin-top: 0;
+  font-size: 0.82rem;
+}
+
+.caption-details summary {
+  width: fit-content;
+  color: var(--text-soft);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.caption-details p {
+  max-height: 70px;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+/* =========================================================
+   Entertainment
+   Vertical sections, horizontal overflow only inside rails
+   ========================================================= */
+
+.entertainment-card {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.culture-stack {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+  overflow: hidden;
+}
+
+.culture-section {
+  min-height: 0;
+  padding: 9px;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+}
+
+.culture-section h3 {
+  margin: 0 0 6px;
+}
+
+.culture-rail {
+  height: calc(100% - 26px);
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-auto-columns: minmax(190px, 1fr);
+  gap: 7px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 4px;
+}
+
+.culture-item {
+  min-width: 0;
+  padding: 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+
+.culture-item strong,
+.culture-item small {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.culture-item strong {
+  -webkit-line-clamp: 1;
+}
+
+.culture-item small {
+  margin-top: 3px;
+  -webkit-line-clamp: 2;
+}
+
+/* =========================================================
+   Legacy/helper image classes
+   ========================================================= */
 
 .nasa-image-grid {
   display: grid;
@@ -370,90 +601,9 @@ section {
   -webkit-box-orient: vertical;
 }
 
-.picture-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-4);
-  align-items: stretch;
-}
-
-.picture-panel {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  padding: 12px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.055);
-}
-
-.picture-panel__header {
-  min-height: 48px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-2);
-}
-
-.picture-panel h3 {
-  margin: 0 0 4px;
-}
-
-.picture-theme-select {
-  max-width: 150px;
-  min-height: 34px;
-  padding: 6px 10px;
-  font-size: 0.85rem;
-}
-
-.picture-image {
-  width: 100%;
-  height: 190px;
-  object-fit: cover;
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.picture-placeholder {
-  height: 190px;
-  display: grid;
-  place-items: center;
-  padding: var(--space-4);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.08);
-  color: var(--text-muted);
-  text-align: center;
-}
-
-.picture-title {
-  margin: 0;
-  color: var(--text-main);
-  font-weight: 700;
-}
-
-.picture-credit {
-  margin: 0;
-  font-size: 0.88rem;
-}
-
-.caption-details {
-  margin-top: auto;
-}
-
-.caption-details summary {
-  width: fit-content;
-  color: var(--text-soft);
-  font-size: 0.86rem;
-  cursor: pointer;
-}
-
-.caption-details p {
-  max-height: 130px;
-  overflow: auto;
-  padding-right: 6px;
-}
+/* =========================================================
+   Tools overlay
+   ========================================================= */
 
 .tools-open-button {
   background: rgba(255, 255, 255, 0.18);
@@ -567,71 +717,98 @@ section {
   background: rgba(255, 255, 255, 0.08);
 }
 
-@media (max-width: 720px) {
-  .tools-overlay {
-    justify-content: center;
-    align-items: flex-end;
-    padding: 10px;
+/* =========================================================
+   iPad / short-height tuning
+   ========================================================= */
+
+@media (min-width: 800px) and (max-height: 950px) {
+  .app-page {
+    padding: 12px;
   }
 
-  .tools-panel {
-    width: 100%;
-    max-height: 88dvh;
+  .app-shell__top {
+    padding: 14px 18px;
   }
 
-  .tools-panel__header {
-    padding: var(--space-4);
+  .app-shell__header {
+    align-items: center;
   }
 
-  .tools-panel__body {
-    padding: var(--space-4);
+  .app-shell__eyebrow {
+    display: none;
   }
+
+  .app-shell__title {
+    font-size: clamp(1.8rem, 3vw, 3rem);
+  }
+
+  .app-shell__updated {
+    margin-top: 4px;
+  }
+
+  .app-shell__content {
+    padding: 12px 18px 18px;
+  }
+
+  .dashboard-grid {
+    gap: 12px;
+  }
+
 }
 
-@media (max-width: 1050px) {
-  .picture-grid {
+/* =========================================================
+   Small portrait fallback
+   ========================================================= */
+
+@media (max-width: 799px) {
+  .app-page {
+    height: auto;
+    min-height: 100dvh;
+    overflow: auto;
+  }
+
+  .app-shell {
+    min-height: 100dvh;
+    height: auto;
+  }
+
+  .app-shell__header {
+    flex-direction: column;
+  }
+
+  .app-shell__controls {
+    justify-content: flex-start;
+  }
+
+  .app-shell__content {
+    overflow: visible;
+  }
+
+  .dashboard-grid {
     grid-template-columns: 1fr;
   }
 
-  .picture-image,
-  .picture-placeholder {
-    height: 240px;
-  }
-}
-
-@media (max-width: 720px) {
-  .picture-image,
-  .picture-placeholder {
-    height: 190px;
+  .today-fit-grid {
+    height: auto;
+    overflow: visible;
+    grid-template-rows: none;
   }
 
-  .picture-panel__header {
-    display: grid;
-  }
-
-  .picture-theme-select {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 1050px) {
+  .dash-card,
   .today-weather-card,
   .today-earth-card,
-  .today-entertainment-card,
-  .today-picture-card {
-  grid-column: 1 / -1;
-}
-
-  .metric-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .today-picture-card,
+  .today-entertainment-card {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    overflow: visible;
   }
-}
 
-@media (max-width: 720px) {
   .weather-snapshot-header,
   .weather-ocean-row,
   .split-card-grid,
-  .nasa-image-grid {
+  .nasa-image-grid,
+  .picture-grid {
     grid-template-columns: 1fr;
   }
 
@@ -652,45 +829,49 @@ section {
   .weather-hour-pill {
     min-width: 84px;
   }
-}
 
-@media (max-width: 1050px) {
-  .dash-card,
-  .dash-card--hero,
-  .dash-card--wide,
-  .dash-card--compact,
-  .today-primary,
-  .today-secondary {
-    grid-column: span 6;
+  .split-card-grid,
+  .picture-grid,
+  .culture-stack {
+    height: auto;
+    overflow: visible;
   }
 
-  .today-full {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 720px) {
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+  .picture-image,
+  .picture-placeholder {
+    min-height: 95px;
   }
 
-  .dash-card,
-  .dash-card--hero,
-  .dash-card--wide,
-  .dash-card--compact,
-  .today-primary,
-  .today-secondary,
-  .today-full {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 720px) {
-  .app-shell__header {
-    flex-direction: column;
+  .picture-panel__header {
+    display: grid;
   }
 
-  .app-shell__controls {
-    justify-content: flex-start;
+  .culture-section {
+    overflow: visible;
+  }
+
+  .culture-rail {
+    height: auto;
+    grid-template-rows: none;
+    grid-auto-columns: minmax(220px, 80%);
+  }
+
+  .tools-overlay {
+    justify-content: center;
+    align-items: flex-end;
+    padding: 10px;
+  }
+
+  .tools-panel {
+    width: 100%;
+    max-height: 88dvh;
+  }
+
+  .tools-panel__header {
+    padding: var(--space-4);
+  }
+
+  .tools-panel__body {
+    padding: var(--space-4);
   }
 }

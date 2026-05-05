@@ -37,7 +37,7 @@ export function EntertainmentCard({ concerts, movies, music }: Props) {
       <p className="card-eyebrow">Entertainment</p>
       <h2>Things to watch and hear</h2>
 
-      <div className="split-card-grid">
+      <div className="split-card-grid entertainment-stack">
         <div>
           <h3>Concerts</h3>
 

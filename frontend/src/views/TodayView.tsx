@@ -12,8 +12,8 @@ type Props = {
 
 export function TodayView({ dashboard }: Props) {
   return (
-    <DashboardGrid>
-      <Card variant="wide" className="today-weather-card">
+    <DashboardGrid className="today-fit-grid">
+      <Card className="today-weather-card">
         <WeatherTodayCard
           weather={dashboard.weather}
           ocean={dashboard.ocean.current}
@@ -30,6 +30,10 @@ export function TodayView({ dashboard }: Props) {
         />
       </Card>
 
+      <Card className="today-picture-card">
+        <PictureOfDayCard nature={dashboard.nature} nasa={dashboard.nasa} />
+      </Card>
+
       <Card className="today-entertainment-card">
         <EntertainmentCard
           concerts={dashboard.ticketmaster.today}
@@ -37,10 +41,6 @@ export function TodayView({ dashboard }: Props) {
           music={dashboard.music.today}
         />
       </Card>
-
-      <Card variant="wide" className="today-picture-card">
-      <PictureOfDayCard nature={dashboard.nature} nasa={dashboard.nasa} />
-    </Card>
     </DashboardGrid>
   );
 }

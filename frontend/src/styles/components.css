@@ -422,7 +422,7 @@ section {
   padding: 10px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.055);
-  overflow: hidden;
+  overflow: visible
 }
 
 .picture-panel__header {
@@ -484,23 +484,167 @@ section {
   -webkit-box-orient: vertical;
 }
 
-.caption-details {
-  min-height: 24px;
-  margin-top: 0;
-  font-size: 0.82rem;
-}
+/* Caption popover */
 
-.caption-details summary {
+.caption-popover-wrap {
+  position: relative;
+  z-index: 70;
   width: fit-content;
-  color: var(--text-soft);
-  font-size: 0.82rem;
-  cursor: pointer;
 }
 
-.caption-details p {
-  max-height: 70px;
-  overflow: auto;
-  padding-right: 6px;
+/* Invisible bridge between button and popover so desktop hover does not drop */
+.caption-popover-wrap::before {
+  content: "";
+  position: absolute;
+  left: -8px;
+  right: -8px;
+  bottom: 100%;
+  height: 14px;
+  pointer-events: auto;
+}
+
+.caption-button {
+  min-height: 28px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  color: var(--text-soft);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.caption-popover {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  width: min(340px, 78vw);
+  max-height: min(240px, 42vh);
+  padding: 12px;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  background: rgba(8, 18, 28, 0.97);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(6px);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+}
+
+.caption-popover--left {
+  left: 0;
+}
+
+.caption-popover--right {
+  right: 0;
+}
+
+.caption-popover p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.45;
+}
+
+.caption-popover.is-open,
+.caption-popover-wrap:hover .caption-popover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.caption-clickaway {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+/* Touch/tablet: no hover dependency, tap opens/closes */
+@media (hover: none) {
+  .caption-popover-wrap::before {
+    display: none;
+  }
+
+  .caption-popover {
+    width: min(360px, 84vw);
+    max-height: min(280px, 46vh);
+  }
+
+  .caption-popover-wrap:hover .caption-popover {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+  }
+
+  .caption-popover.is-open {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   Caption popover scrollbar
+   Matches the subtle entertainment rail scrollbar.
+   ========================================================= */
+
+.caption-popover {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  scrollbar-gutter: stable;
+}
+
+.caption-popover::-webkit-scrollbar {
+  width: 7px;
+}
+
+.caption-popover::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.caption-popover::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.caption-popover:hover,
+.caption-popover:focus-within,
+.caption-popover.is-open {
+  scrollbar-color: rgba(255, 255, 255, 0.32) transparent;
+}
+
+.caption-popover:hover::-webkit-scrollbar-thumb,
+.caption-popover:focus-within::-webkit-scrollbar-thumb,
+.caption-popover.is-open::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.caption-popover::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+@media (hover: none) {
+  .caption-popover {
+    scrollbar-color: transparent transparent;
+  }
+
+  .caption-popover::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
+
+  .caption-popover.is-open {
+    scrollbar-color: rgba(255, 255, 255, 0.26) transparent;
+  }
+
+  .caption-popover.is-open::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.22);
+  }
 }
 
 /* =========================================================
@@ -525,6 +669,7 @@ section {
   overflow-y: hidden;
   padding: 2px 2px 8px;
   overscroll-behavior-x: contain;
+  scrollbar-gutter: stable;
 }
 
 .entertainment-item {
@@ -715,6 +860,55 @@ section {
   padding: 10px 12px;
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.08);
+}
+/* =========================================================
+   Entertainment rail scrollbar
+   Space is always reserved so content does not jump.
+   Thumb is transparent until hover/focus.
+   ========================================================= */
+
+.entertainment-rail {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+  scrollbar-gutter: stable;
+}
+
+.entertainment-rail::-webkit-scrollbar {
+  height: 7px;
+}
+
+.entertainment-rail::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.entertainment-rail::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 999px;
+}
+
+.entertainment-rail:hover,
+.entertainment-rail:focus-within {
+  scrollbar-color: rgba(255, 255, 255, 0.32) transparent;
+}
+
+.entertainment-rail:hover::-webkit-scrollbar-thumb,
+.entertainment-rail:focus-within::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.entertainment-rail::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.42);
+}
+
+/* Touch/iPad: keep the rail swipeable and reserve space where supported. */
+@media (hover: none) {
+  .entertainment-rail {
+    scrollbar-color: transparent transparent;
+  }
+
+  .entertainment-rail::-webkit-scrollbar-thumb {
+    background: transparent;
+  }
 }
 
 /* =========================================================

@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import type { Dashboard, NaturePhoto } from "../../types/dashboard";
 
 type Props = {
@@ -20,32 +22,78 @@ function pickNaturePhoto(photos: NaturePhoto[]): NaturePhoto | null {
   return photos[0];
 }
 
-function Caption({
+function CaptionPopover({
+  id,
   text,
   fallback,
+  activeCaption,
+  onToggle,
+  align = "left",
 }: {
+  id: string;
   text: string | null | undefined;
   fallback?: string;
+  activeCaption: string | null;
+  onToggle: (id: string) => void;
+  align?: "left" | "right";
 }) {
   const value = text || fallback;
+  const isOpen = activeCaption === id;
 
   if (!value) return null;
 
+  function handleClick() {
+    if (window.matchMedia("(hover: hover)").matches) {
+      return;
+    }
+
+    onToggle(id);
+  }
+
   return (
-    <details className="caption-details">
-      <summary>Caption</summary>
-      <p>{value}</p>
-    </details>
+    <div className="caption-popover-wrap">
+      <button
+        type="button"
+        className="caption-button"
+        aria-expanded={isOpen}
+        onClick={handleClick}
+      >
+        Caption
+      </button>
+
+      <div
+        className={`caption-popover caption-popover--${align} ${
+          isOpen ? "is-open" : ""
+        }`}
+      >
+        <p>{value}</p>
+      </div>
+    </div>
   );
 }
 
 export function PictureOfDayCard({ nature, nasa }: Props) {
+  const [activeCaption, setActiveCaption] = useState<string | null>(null);
+
   const naturePhoto = pickNaturePhoto(nature.today);
   const apod = nasa.apod;
   const epic = nasa.epic;
 
+  function toggleCaption(id: string) {
+    setActiveCaption((current) => (current === id ? null : id));
+  }
+
   return (
-     <div className="picture-card">
+    <div className="picture-card">
+      {activeCaption && (
+        <button
+          type="button"
+          className="caption-clickaway"
+          aria-label="Close caption"
+          onClick={() => setActiveCaption(null)}
+        />
+      )}
+
       <p className="card-eyebrow">Picture of the Day</p>
       <h2>Nature, space, and Earth</h2>
 
@@ -92,7 +140,13 @@ export function PictureOfDayCard({ nature, nasa }: Props) {
                 </p>
               )}
 
-              <Caption text={naturePhoto.alt} fallback={naturePhoto.theme} />
+              <CaptionPopover
+                id="nature"
+                text={naturePhoto.alt}
+                fallback={naturePhoto.theme}
+                activeCaption={activeCaption}
+                onToggle={toggleCaption}
+              />
             </>
           )}
         </article>
@@ -128,7 +182,13 @@ export function PictureOfDayCard({ nature, nasa }: Props) {
               )}
 
               <p className="picture-title">{apod.title}</p>
-              <Caption text={apod.explanation} />
+
+              <CaptionPopover
+                id="apod"
+                text={apod.explanation}
+                activeCaption={activeCaption}
+                onToggle={toggleCaption}
+              />
             </>
           )}
         </article>
@@ -152,7 +212,14 @@ export function PictureOfDayCard({ nature, nasa }: Props) {
               />
 
               <p className="picture-title">NASA EPIC Earth</p>
-              <Caption text={epic.caption} />
+
+              <CaptionPopover
+                id="epic"
+                text={epic.caption}
+                activeCaption={activeCaption}
+                onToggle={toggleCaption}
+                align="right"
+                />
             </>
           )}
         </article>

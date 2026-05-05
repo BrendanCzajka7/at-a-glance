@@ -1,0 +1,27 @@
+:root {
+  --bg-deep: #07131d;
+  --bg-ocean: #0d3647;
+  --bg-sand: #d8b98a;
+
+  --text-main: #f7fbff;
+  --text-muted: rgba(247, 251, 255, 0.72);
+  --text-soft: rgba(247, 251, 255, 0.52);
+
+  --glass-bg: rgba(10, 22, 32, 0.68);
+  --glass-bg-soft: rgba(255, 255, 255, 0.09);
+  --glass-border: rgba(255, 255, 255, 0.16);
+
+  --shadow-lg: 0 24px 80px rgba(0, 0, 0, 0.42);
+  --shadow-md: 0 12px 35px rgba(0, 0, 0, 0.28);
+
+  --radius-xl: 28px;
+  --radius-lg: 20px;
+  --radius-md: 14px;
+
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 18px;
+  --space-5: 24px;
+  --space-6: 32px;
+}

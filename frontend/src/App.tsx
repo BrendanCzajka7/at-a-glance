@@ -2,10 +2,11 @@ import { useEffect, useState } from "react";
 
 import { fetchDashboard, fetchLocations } from "./api/dashboard";
 import { AppToolbar } from "./components/AppToolbar";
+import { AppShell } from "./components/layout/AppShell";
 import { LocationSelect } from "./components/LocationSelect";
+import { StatusText } from "./components/ui/StatusText";
 import { ViewTabs } from "./components/ViewTabs";
 import type { Dashboard, Location } from "./types/dashboard";
-import { formatTime } from "./features/weather/weatherFormat";
 import { getDashboardView, type DashboardView } from "./views/viewRegistry";
 
 export default function App() {
@@ -15,21 +16,27 @@ export default function App() {
   const [view, setView] = useState<DashboardView>("today");
   const [dashboard, setDashboard] = useState<Dashboard | null>(null);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const ActiveView = getDashboardView(view).Component;
 
   useEffect(() => {
     fetchLocations()
       .then(setLocations)
-      .catch((err) => setError(err.message));
+      .catch((err) =>
+        setError(err instanceof Error ? err.message : "Failed to load locations")
+      );
   }, []);
 
   async function loadDashboard() {
     try {
       setError("");
+      setIsLoading(true);
       setDashboard(await fetchDashboard(selectedLocationKey));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Unknown error");
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -41,28 +48,25 @@ export default function App() {
   }, [selectedLocationKey]);
 
   return (
-    <main>
-      <h1>At a Glance</h1>
-
-      <AppToolbar onChanged={loadDashboard} />
-
-      <LocationSelect
-        locations={locations}
-        value={selectedLocationKey}
-        onChange={setSelectedLocationKey}
-      />
-
-      <ViewTabs value={view} onChange={setView} />
-
-      {error && <p>Error: {error}</p>}
-      {!dashboard && !error && <p>Loading...</p>}
-
-      {dashboard && (
+    <AppShell
+      title="At a Glance"
+      updatedAt={dashboard?.generated_at ?? null}
+      controls={
         <>
-          <p>Updated: {formatTime(dashboard.generated_at)}</p>
-          <ActiveView dashboard={dashboard} />
+          <LocationSelect
+            locations={locations}
+            value={selectedLocationKey}
+            onChange={setSelectedLocationKey}
+          />
+
+          <ViewTabs value={view} onChange={setView} />
         </>
-      )}
-    </main>
+      }
+      admin={<AppToolbar onChanged={loadDashboard} />}
+    >
+      <StatusText error={error} isLoading={isLoading && !dashboard} />
+
+      {dashboard && <ActiveView dashboard={dashboard} />}
+    </AppShell>
   );
 }

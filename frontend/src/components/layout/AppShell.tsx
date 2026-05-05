@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 
 type Props = {
   title: string;
@@ -18,6 +18,8 @@ function formatUpdatedAt(value?: string | null) {
 }
 
 export function AppShell({ title, updatedAt, controls, admin, children }: Props) {
+  const [isToolsOpen, setIsToolsOpen] = useState(false);
+
   return (
     <div className="app-page">
       <div className="app-shell">
@@ -31,19 +33,59 @@ export function AppShell({ title, updatedAt, controls, admin, children }: Props)
               </p>
             </div>
 
-            {controls && <div className="app-shell__controls">{controls}</div>}
-          </header>
+            <div className="app-shell__controls">
+              {controls}
 
-          {admin && (
-            <details className="app-shell__admin">
-              <summary>Tools</summary>
-              <div className="app-shell__admin-body">{admin}</div>
-            </details>
-          )}
+              {admin && (
+                <button
+                  type="button"
+                  className="tools-open-button"
+                  onClick={() => setIsToolsOpen(true)}
+                >
+                  Tools
+                </button>
+              )}
+            </div>
+          </header>
         </div>
 
         <main className="app-shell__content">{children}</main>
       </div>
+
+      {admin && isToolsOpen && (
+        <div
+          className="tools-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tools"
+        >
+          <button
+            type="button"
+            className="tools-backdrop"
+            aria-label="Close tools"
+            onClick={() => setIsToolsOpen(false)}
+          />
+
+          <aside className="tools-panel">
+            <div className="tools-panel__header">
+              <div>
+                <p className="card-eyebrow">Dashboard controls</p>
+                <h2>Tools</h2>
+              </div>
+
+              <button
+                type="button"
+                className="tools-close-button"
+                onClick={() => setIsToolsOpen(false)}
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="tools-panel__body">{admin}</div>
+          </aside>
+        </div>
+      )}
     </div>
   );
 }

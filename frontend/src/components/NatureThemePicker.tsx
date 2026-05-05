@@ -32,7 +32,7 @@ export function NatureThemePicker({ onChanged }: Props) {
 
       await ingestNaturePhoto(selectedTheme);
 
-      setMessage(`Updated nature photo: ${selectedTheme}`);
+      setMessage(`Updated theme: ${selectedTheme}`);
       onChanged?.();
     } catch (err) {
       setMessage(
@@ -44,30 +44,32 @@ export function NatureThemePicker({ onChanged }: Props) {
   }
 
   return (
-    <section>
-      <h3>Nature Photo</h3>
+    <div>
+      <h3>Theme</h3>
 
-      <select
-        value={selectedTheme}
-        onChange={(e) => setSelectedTheme(e.target.value)}
-        disabled={isBusy || themes.length === 0}
-      >
-        {themes.map((theme) => (
-          <option key={theme} value={theme}>
-            {theme}
-          </option>
-        ))}
-      </select>
+      <div className="tools-row">
+        <select
+          value={selectedTheme}
+          onChange={(e) => setSelectedTheme(e.target.value)}
+          disabled={isBusy || themes.length === 0}
+        >
+          {themes.map((theme) => (
+            <option key={theme} value={theme}>
+              {theme}
+            </option>
+          ))}
+        </select>
 
-      <button
-        type="button"
-        onClick={handleUpdatePhoto}
-        disabled={isBusy || !selectedTheme}
-      >
-        {isBusy ? "Updating..." : "Update Photo"}
-      </button>
+        <button
+          type="button"
+          onClick={handleUpdatePhoto}
+          disabled={isBusy || !selectedTheme}
+        >
+          {isBusy ? "Updating..." : "Update"}
+        </button>
+      </div>
 
-      {message && <p>{message}</p>}
-    </section>
+      {message && <p className="tools-message">{message}</p>}
+    </div>
   );
 }

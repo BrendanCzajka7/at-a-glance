@@ -1,5 +1,3 @@
-// frontend/src/components/RecentErrorsPanel.tsx
-
 import { useState } from "react";
 
 import { fetchRecentAppEvents, type AppEvent } from "../api/appEvents";
@@ -36,15 +34,17 @@ export function RecentErrorsPanel() {
   const errors = events.filter((event) => event.level === "error");
 
   return (
-    <section>
+    <div>
+      <h3>Debug</h3>
+
       <button type="button" onClick={handleToggle} disabled={isLoading}>
-        {isOpen ? "Hide Recent Errors" : "Show Recent Errors"}
+        {isOpen ? "Hide Debug Info" : "Show Debug Info"}
       </button>
 
       {isOpen && (
-        <div>
+        <div className="tools-list">
           {isLoading && <p>Loading errors...</p>}
-          {message && <p>{message}</p>}
+          {message && <p className="tools-message">{message}</p>}
 
           {!isLoading && errors.length === 0 && <p>No recent errors.</p>}
 
@@ -60,7 +60,7 @@ export function RecentErrorsPanel() {
               </p>
 
               {event.details && (
-                <pre style={{ whiteSpace: "pre-wrap", maxWidth: 900 }}>
+                <pre style={{ whiteSpace: "pre-wrap", maxWidth: "100%" }}>
                   {event.details}
                 </pre>
               )}
@@ -68,6 +68,6 @@ export function RecentErrorsPanel() {
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

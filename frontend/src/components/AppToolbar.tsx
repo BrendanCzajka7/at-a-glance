@@ -16,6 +16,7 @@ import {
   type TmdbGenreSearchResult,
   type TmdbWatchItem,
 } from "../api/tmdb";
+import { NatureThemePicker } from "./NatureThemePicker";
 import { RecentErrorsPanel } from "./RecentErrorsPanel";
 
 type Props = {
@@ -38,7 +39,7 @@ export function AppToolbar({ onChanged }: Props) {
 
   const [message, setMessage] = useState("");
   const [isBusy, setIsBusy] = useState(false);
-  const [showCurrent, setShowCurrent] = useState(false);
+  const [hasLoadedCurrent, setHasLoadedCurrent] = useState(false);
 
   async function refreshCurrentItems() {
     const [artists, watchItems] = await Promise.all([
@@ -48,17 +49,18 @@ export function AppToolbar({ onChanged }: Props) {
 
     setCurrentArtists(artists);
     setCurrentWatchItems(watchItems);
+    setHasLoadedCurrent(true);
   }
 
-  async function handleShowCurrent() {
+  async function handleLoadCultureChoices() {
     try {
       setMessage("");
       setIsBusy(true);
-
       await refreshCurrentItems();
-      setShowCurrent((value) => !value);
     } catch (err) {
-      setMessage(err instanceof Error ? err.message : "Failed to load current items");
+      setMessage(
+        err instanceof Error ? err.message : "Failed to load culture choices"
+      );
     } finally {
       setIsBusy(false);
     }
@@ -72,7 +74,7 @@ export function AppToolbar({ onChanged }: Props) {
       setMessage("");
       setIsBusy(true);
 
-      if (currentArtists.length === 0) {
+      if (!hasLoadedCurrent) {
         await refreshCurrentItems();
       }
 
@@ -109,7 +111,7 @@ export function AppToolbar({ onChanged }: Props) {
       setMessage("");
       setIsBusy(true);
 
-      if (currentWatchItems.length === 0) {
+      if (!hasLoadedCurrent) {
         await refreshCurrentItems();
       }
 
@@ -148,7 +150,7 @@ export function AppToolbar({ onChanged }: Props) {
       setMessage("");
       setIsBusy(true);
 
-      if (currentWatchItems.length === 0) {
+      if (!hasLoadedCurrent) {
         await refreshCurrentItems();
       }
 
@@ -198,161 +200,196 @@ export function AppToolbar({ onChanged }: Props) {
   );
 
   return (
-    <section
-      style={{
-        border: "1px solid #ccc",
-        padding: 12,
-        marginBottom: 16,
-      }}
-    >
-      <h2>Tools</h2>
-      <RecentErrorsPanel />
+    <div>
+      <section className="tools-section">
+        <NatureThemePicker onChanged={onChanged} />
+      </section>
 
-      <button type="button" onClick={handleShowCurrent} disabled={isBusy}>
-        {showCurrent ? "Hide Current Items" : "Show Current Items"}
-      </button>
-
-      {showCurrent && (
-        <section>
-          <h3>Current Items</h3>
-
-          <div>
-            <strong>Music Artists</strong>
-            {currentArtists.length === 0 && <p>None added.</p>}
-            {currentArtists.map((artist) => (
-              <p key={artist.musicbrainz_artist_id}>{artist.name}</p>
-            ))}
-          </div>
-
-          <div>
-            <strong>Movie Genres</strong>
-            {currentGenres.length === 0 && <p>None added.</p>}
-            {currentGenres.map((genre) => (
-              <p key={genre.tmdb_id}>{genre.name}</p>
-            ))}
-          </div>
-
-          <div>
-            <strong>Directors</strong>
-            {currentDirectors.length === 0 && <p>None added.</p>}
-            {currentDirectors.map((director) => (
-              <p key={director.tmdb_id}>{director.name}</p>
-            ))}
-          </div>
-        </section>
-      )}
-
-      <section>
-        <h3>Add Music Artist</h3>
-
-        <input
-          value={artistQuery}
-          onChange={(e) => setArtistQuery(e.target.value)}
-          placeholder="Search artist..."
-        />
+      <section className="tools-section">
+        <h3>Culture Choices</h3>
 
         <button
           type="button"
-          onClick={handleArtistSearch}
-          disabled={isBusy || !artistQuery.trim()}
+          onClick={handleLoadCultureChoices}
+          disabled={isBusy}
         >
-          Search
+          {hasLoadedCurrent ? "Refresh Choices" : "Load Choices"}
         </button>
 
-        {artistResults.map((artist) => {
-          const alreadyAdded = artistAlreadyAdded(artist);
-
-          return (
-            <div key={artist.musicbrainz_artist_id}>
-              <strong>{artist.name}</strong>{" "}
-              <small>
-                {artist.type ?? "Artist"}
-                {artist.country ? ` · ${artist.country}` : ""}
-                {artist.disambiguation ? ` · ${artist.disambiguation}` : ""}
-                {artist.score !== null ? ` · score ${artist.score}` : ""}
-              </small>{" "}
-              <button
-                type="button"
-                disabled={isBusy || alreadyAdded}
-                onClick={() => handleAddArtist(artist)}
-              >
-                {alreadyAdded ? "Added" : "Add"}
-              </button>
+        {hasLoadedCurrent && (
+          <div className="tools-list">
+            <div>
+              <strong>Music Artists</strong>
+              {currentArtists.length === 0 && <p>None added.</p>}
+              {currentArtists.map((artist) => (
+                <p key={artist.musicbrainz_artist_id}>{artist.name}</p>
+              ))}
             </div>
-          );
-        })}
+
+            <div>
+              <strong>Movie Genres</strong>
+              {currentGenres.length === 0 && <p>None added.</p>}
+              {currentGenres.map((genre) => (
+                <p key={genre.tmdb_id}>{genre.name}</p>
+              ))}
+            </div>
+
+            <div>
+              <strong>Directors</strong>
+              {currentDirectors.length === 0 && <p>None added.</p>}
+              {currentDirectors.map((director) => (
+                <p key={director.tmdb_id}>{director.name}</p>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
-      <section>
-        <h3>Add Movie Genre</h3>
+      <section className="tools-section">
+        <h3>Add Culture</h3>
 
-        <button type="button" onClick={handleLoadGenres} disabled={isBusy}>
-          Load Genres
-        </button>
+        <div className="tools-list">
+          <div>
+            <strong>Add Music Artist</strong>
 
-        {genreResults.map((genre) => {
-          const alreadyAdded = watchItemAlreadyAdded("genre", genre.tmdb_id);
+            <div className="tools-row">
+              <input
+                value={artistQuery}
+                onChange={(e) => setArtistQuery(e.target.value)}
+                placeholder="Search artist..."
+              />
 
-          return (
-            <div key={genre.tmdb_id}>
-              <strong>{genre.name}</strong>{" "}
               <button
                 type="button"
-                disabled={isBusy || alreadyAdded}
-                onClick={() => handleAddGenre(genre)}
+                onClick={handleArtistSearch}
+                disabled={isBusy || !artistQuery.trim()}
               >
-                {alreadyAdded ? "Added" : "Add"}
+                Search
               </button>
             </div>
-          );
-        })}
-      </section>
 
-      <section>
-        <h3>Add Director</h3>
+            <div className="tools-list">
+              {artistResults.map((artist) => {
+                const alreadyAdded = artistAlreadyAdded(artist);
 
-        <input
-          value={directorQuery}
-          onChange={(e) => setDirectorQuery(e.target.value)}
-          placeholder="Search director..."
-        />
+                return (
+                  <div className="tools-result" key={artist.musicbrainz_artist_id}>
+                    <div>
+                      <strong>{artist.name}</strong>{" "}
+                      <small>
+                        {artist.type ?? "Artist"}
+                        {artist.country ? ` · ${artist.country}` : ""}
+                        {artist.disambiguation
+                          ? ` · ${artist.disambiguation}`
+                          : ""}
+                        {artist.score !== null ? ` · score ${artist.score}` : ""}
+                      </small>
+                    </div>
 
-        <button
-          type="button"
-          onClick={handleDirectorSearch}
-          disabled={isBusy || !directorQuery.trim()}
-        >
-          Search
-        </button>
+                    <button
+                      type="button"
+                      disabled={isBusy || alreadyAdded}
+                      onClick={() => handleAddArtist(artist)}
+                    >
+                      {alreadyAdded ? "Added" : "Add"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
 
-        {directorResults.map((director) => {
-          const alreadyAdded = watchItemAlreadyAdded(
-            "director",
-            director.tmdb_id
-          );
+          <div>
+            <strong>Add Movie Genre</strong>
 
-          return (
-            <div key={director.tmdb_id}>
-              <strong>{director.name}</strong>{" "}
-              <small>
-                {director.known_for_department ?? "Person"}
-                {director.popularity !== null
-                  ? ` · popularity ${Math.round(director.popularity)}`
-                  : ""}
-              </small>{" "}
+            <div className="tools-row">
+              <button type="button" onClick={handleLoadGenres} disabled={isBusy}>
+                Load Genres
+              </button>
+            </div>
+
+            <div className="tools-list">
+              {genreResults.map((genre) => {
+                const alreadyAdded = watchItemAlreadyAdded(
+                  "genre",
+                  genre.tmdb_id
+                );
+
+                return (
+                  <div className="tools-result" key={genre.tmdb_id}>
+                    <strong>{genre.name}</strong>
+
+                    <button
+                      type="button"
+                      disabled={isBusy || alreadyAdded}
+                      onClick={() => handleAddGenre(genre)}
+                    >
+                      {alreadyAdded ? "Added" : "Add"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div>
+            <strong>Add Director</strong>
+
+            <div className="tools-row">
+              <input
+                value={directorQuery}
+                onChange={(e) => setDirectorQuery(e.target.value)}
+                placeholder="Search director..."
+              />
+
               <button
                 type="button"
-                disabled={isBusy || alreadyAdded}
-                onClick={() => handleAddDirector(director)}
+                onClick={handleDirectorSearch}
+                disabled={isBusy || !directorQuery.trim()}
               >
-                {alreadyAdded ? "Added" : "Add"}
+                Search
               </button>
             </div>
-          );
-        })}
+
+            <div className="tools-list">
+              {directorResults.map((director) => {
+                const alreadyAdded = watchItemAlreadyAdded(
+                  "director",
+                  director.tmdb_id
+                );
+
+                return (
+                  <div className="tools-result" key={director.tmdb_id}>
+                    <div>
+                      <strong>{director.name}</strong>{" "}
+                      <small>
+                        {director.known_for_department ?? "Person"}
+                        {director.popularity !== null
+                          ? ` · popularity ${Math.round(director.popularity)}`
+                          : ""}
+                      </small>
+                    </div>
+
+                    <button
+                      type="button"
+                      disabled={isBusy || alreadyAdded}
+                      onClick={() => handleAddDirector(director)}
+                    >
+                      {alreadyAdded ? "Added" : "Add"}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {message && <p className="tools-message">{message}</p>}
       </section>
 
-      {message && <p>{message}</p>}
-    </section>
+      <section className="tools-section">
+        <RecentErrorsPanel />
+      </section>
+    </div>
   );
 }

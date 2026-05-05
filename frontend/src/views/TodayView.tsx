@@ -1,18 +1,10 @@
-import { MusicReleasesSection } from "../features/music/MusicReleasesSection";
-import { NasaApodSection } from "../features/nasa/NasaApodSection";
-import { NasaEpicSection } from "../features/nasa/NasaEpicSection";
-import { NasaNeoToday } from "../features/nasa/NasaNeoToday";
-import { WeatherAtGlance } from "../features/weather/WeatherAtGlance";
-import { WeatherTodaySummary } from "../features/weather/WeatherTodaySummary";
-import { WeatherUpcomingHours } from "../features/weather/WeatherUpcomingHours";
+import { DashboardGrid } from "../components/layout/DashboardGrid";
+import { Card } from "../components/ui/Card";
+import { EntertainmentCard } from "../features/entertainment/EntertainmentCard";
+import { PictureOfDayCard } from "../features/nature/PictureOfDayCard";
+import { EarthSpaceCard } from "../features/space/EarthSpaceCard";
+import { WeatherTodayCard } from "../features/weather/WeatherTodayCard";
 import type { Dashboard } from "../types/dashboard";
-import { TmdbMoviesMini } from "../features/tmdb/TmdbMoviesMini";
-import { TicketmasterConcertsMini } from "../features/ticketmaster/TicketmasterConcertsMini";
-import { SpaceLaunchesMini } from "../features/space/SpaceLaunchesMini";
-import { UsgsEarthToday } from "../features/usgs/UsgsEarthToday";
-import { NoaaToday } from "../features/noaa/NoaaToday";
-import { OceanConditionsToday } from "../features/ocean/OceanConditionsToday";
-import { NatureHero } from "../features/nature/NatureHero";
 
 type Props = {
   dashboard: Dashboard;
@@ -20,41 +12,35 @@ type Props = {
 
 export function TodayView({ dashboard }: Props) {
   return (
-    <div style={{ display: "flex", gap: 24 }}>
-      <section style={{ flex: 1 }}>
-        <h2>At a Glance</h2>
-        <WeatherAtGlance weather={dashboard.weather} />
-        <WeatherUpcomingHours weather={dashboard.weather} />
-      </section>
-
-      <section style={{ flex: 1 }}>
-        <h2>Today</h2>
-        <NatureHero photos={dashboard.nature.today} />
-        <WeatherTodaySummary weather={dashboard.weather} />
-        <OceanConditionsToday ocean={dashboard.ocean.current} />
-        <NoaaToday
+    <DashboardGrid>
+      <Card variant="wide" className="today-weather-card">
+        <WeatherTodayCard
+          weather={dashboard.weather}
+          ocean={dashboard.ocean.current}
           tides={dashboard.noaa.tides_today}
-          weatherAlerts={dashboard.noaa.weather_alerts}
-          spaceWeather={dashboard.noaa.space_weather}
         />
-        <UsgsEarthToday
-        largest={dashboard.usgs.largest_today}
-        mostSignificant={dashboard.usgs.most_significant_today}
-        tsunamiEvents={dashboard.usgs.tsunami_events_today}
-        alertEvents={dashboard.usgs.alert_events_today}
-      />
+      </Card>
 
-        <MusicReleasesSection
-          title="Music Releases Today"
-          releases={dashboard.music.today}
+      <Card className="today-earth-card">
+        <EarthSpaceCard
+          noaa={dashboard.noaa}
+          usgs={dashboard.usgs}
+          nasa={dashboard.nasa}
+          launches={dashboard.space.today}
         />
-        <TmdbMoviesMini movies={dashboard.tmdb.today} />
-        <TicketmasterConcertsMini concerts={dashboard.ticketmaster.today} />
-        <NasaApodSection nasa={dashboard.nasa} />
-        <NasaEpicSection nasa={dashboard.nasa} />
-        <NasaNeoToday neos={dashboard.nasa.neos.today} />
-        <SpaceLaunchesMini launches={dashboard.space.today} />
-      </section>
-    </div>
+      </Card>
+
+      <Card className="today-entertainment-card">
+        <EntertainmentCard
+          concerts={dashboard.ticketmaster.today}
+          movies={dashboard.tmdb.today}
+          music={dashboard.music.today}
+        />
+      </Card>
+
+      <Card variant="wide" className="today-picture-card">
+      <PictureOfDayCard nature={dashboard.nature} nasa={dashboard.nasa} />
+    </Card>
+    </DashboardGrid>
   );
 }

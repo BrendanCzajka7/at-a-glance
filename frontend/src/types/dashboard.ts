@@ -14,6 +14,8 @@ export type WeatherCurrent = {
   cloud_cover: number | null;
   is_day: number | null;
   weather_code: number | null;
+  precipitation_inches: number | null;
+  uv_index: number | null;
 };
 
 export type WeatherHour = {
@@ -25,6 +27,7 @@ export type WeatherHour = {
   cloud_cover: number | null;
   uv_index: number | null;
   weather_code: number | null;
+  wind_direction_degrees: number | null;
 };
 
 export type WeatherDay = {

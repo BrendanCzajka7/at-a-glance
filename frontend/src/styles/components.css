@@ -505,73 +505,73 @@ section {
 
 /* =========================================================
    Entertainment
-   Vertical sections, horizontal overflow only inside rails
+   One horizontal rail. Dense city data scrolls sideways.
    ========================================================= */
 
 .entertainment-card {
   height: 100%;
   min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.entertainment-rail {
+  min-width: 0;
+  min-height: 0;
   display: flex;
-  flex-direction: column;
-}
-
-.culture-stack {
-  flex: 1;
-  min-height: 0;
-  display: grid;
-  grid-template-rows: repeat(3, minmax(0, 1fr));
-  gap: var(--space-2);
-  overflow: hidden;
-}
-
-.culture-section {
-  min-height: 0;
-  padding: 9px;
-  border-radius: var(--radius-md);
-  background: rgba(255, 255, 255, 0.055);
-  overflow: hidden;
-}
-
-.culture-section h3 {
-  margin: 0 0 6px;
-}
-
-.culture-rail {
-  height: calc(100% - 26px);
-  display: grid;
-  grid-auto-flow: column;
-  grid-template-rows: repeat(2, minmax(0, 1fr));
-  grid-auto-columns: minmax(190px, 1fr);
-  gap: 7px;
+  gap: var(--space-3);
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 4px;
+  padding: 2px 2px 8px;
+  overscroll-behavior-x: contain;
 }
 
-.culture-item {
-  min-width: 0;
-  padding: 8px;
-  border-radius: 12px;
+.entertainment-item {
+  flex: 0 0 clamp(210px, 42%, 290px);
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 7px;
+  padding: 12px;
+  border-radius: var(--radius-md);
   background: rgba(255, 255, 255, 0.06);
   overflow: hidden;
 }
 
-.culture-item strong,
-.culture-item small {
+.entertainment-label {
+  width: fit-content;
+  padding: 3px 8px;
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  color: var(--text-soft);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.entertainment-item strong {
   display: -webkit-box;
   overflow: hidden;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  color: var(--text-main);
+}
+
+.entertainment-item p {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
 
-.culture-item strong {
+.entertainment-item small:not(.entertainment-label) {
+  display: -webkit-box;
+  overflow: hidden;
   -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
 }
-
-.culture-item small {
-  margin-top: 3px;
-  -webkit-line-clamp: 2;
-}
-
 /* =========================================================
    Legacy/helper image classes
    ========================================================= */
@@ -850,11 +850,9 @@ section {
     overflow: visible;
   }
 
-  .culture-rail {
-    height: auto;
-    grid-template-rows: none;
-    grid-auto-columns: minmax(220px, 80%);
-  }
+  .culture-item {
+  flex-basis: min(240px, 80vw);
+  } 
 
   .tools-overlay {
     justify-content: center;

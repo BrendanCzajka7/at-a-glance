@@ -32,78 +32,96 @@ function formatConcertTime(value: string | null) {
 }
 
 export function EntertainmentCard({ concerts, movies, music }: Props) {
+  const hasItems =
+    concerts.length > 0 || movies.length > 0 || music.length > 0;
+
   return (
-    <div>
+    <div className="entertainment-card">
       <p className="card-eyebrow">Entertainment</p>
       <h2>Things to watch and hear</h2>
 
-      <div className="split-card-grid entertainment-stack">
-        <div>
-          <h3>Concerts</h3>
+      {!hasItems && <p>No concerts, movies, or music releases today.</p>}
 
-          {concerts.length === 0 && <p>No concerts today.</p>}
+      {hasItems && (
+        <div className="entertainment-rail">
+          {concerts.map((concert) => (
+            <article
+              className="entertainment-item"
+              key={`concert-${concert.name}-${concert.event_date}-${concert.venue_name}`}
+            >
+              <small className="entertainment-label">Concert</small>
 
-          {concerts.slice(0, 4).map((concert) => (
-            <p key={`${concert.name}-${concert.event_date}-${concert.venue_name}`}>
-              {concert.source_url ? (
-                <a href={concert.source_url} target="_blank" rel="noreferrer">
-                  {concert.name}
-                </a>
-              ) : (
-                concert.name
-              )}
-              <small>
-                {" "}
-                · {formatConcertTime(concert.event_time)}
+              <strong>
+                {concert.source_url ? (
+                  <a href={concert.source_url} target="_blank" rel="noreferrer">
+                    {concert.name}
+                  </a>
+                ) : (
+                  concert.name
+                )}
+              </strong>
+
+              <p>
+                {formatConcertTime(concert.event_time)}
                 {concert.venue_name ? ` · ${concert.venue_name}` : ""}
-              </small>
-            </p>
-          ))}
-        </div>
+              </p>
 
-        <div>
-          <h3>Movies</h3>
-
-          {movies.length === 0 && <p>No movie releases today.</p>}
-
-          {movies.slice(0, 4).map((movie) => (
-            <p key={`${movie.tmdb_movie_id}-${movie.matched_kind}-${movie.matched_name}`}>
-              {movie.source_url ? (
-                <a href={movie.source_url} target="_blank" rel="noreferrer">
-                  {movie.title}
-                </a>
-              ) : (
-                movie.title
-              )}
               <small>
-                {" "}
-                · {movie.matched_kind}: {movie.matched_name}
+                {concert.city}
+                {concert.state ? `, ${concert.state}` : ""}
               </small>
-            </p>
+            </article>
+          ))}
+
+          {movies.map((movie) => (
+            <article
+              className="entertainment-item"
+              key={`movie-${movie.tmdb_movie_id}-${movie.matched_kind}-${movie.matched_name}`}
+            >
+              <small className="entertainment-label">Movie</small>
+
+              <strong>
+                {movie.source_url ? (
+                  <a href={movie.source_url} target="_blank" rel="noreferrer">
+                    {movie.title}
+                  </a>
+                ) : (
+                  movie.title
+                )}
+              </strong>
+
+              <p>
+                {movie.matched_kind}: {movie.matched_name}
+              </p>
+
+              <small>{formatDate(movie.release_date)}</small>
+            </article>
+          ))}
+
+          {music.map((release) => (
+            <article
+              className="entertainment-item"
+              key={`music-${release.artist_name}-${release.title}-${release.release_date}`}
+            >
+              <small className="entertainment-label">Music</small>
+
+              <strong>
+                {release.source_url ? (
+                  <a href={release.source_url} target="_blank" rel="noreferrer">
+                    {release.artist_name}
+                  </a>
+                ) : (
+                  release.artist_name
+                )}
+              </strong>
+
+              <p>{release.title}</p>
+
+              <small>{formatDate(release.release_date)}</small>
+            </article>
           ))}
         </div>
-
-        <div>
-          <h3>Music</h3>
-
-          {music.length === 0 && <p>No music releases today.</p>}
-
-          {music.slice(0, 4).map((release) => (
-            <p key={`${release.artist_name}-${release.title}-${release.release_date}`}>
-              {release.source_url ? (
-                <a href={release.source_url} target="_blank" rel="noreferrer">
-                  {release.artist_name}: {release.title}
-                </a>
-              ) : (
-                <>
-                  {release.artist_name}: {release.title}
-                </>
-              )}
-              <small> · {formatDate(release.release_date)}</small>
-            </p>
-          ))}
-        </div>
-      </div>
+      )}
     </div>
   );
 }
